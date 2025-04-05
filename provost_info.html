@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Provost Access</title>
+  <style>
+    body {
+      background-color: black;
+      color: #39FF14; /* neon green */
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .glow-green {
+      text-shadow: 0 0 5px #39FF14;
+    }
+    .glow-red {
+      text-shadow: 0 0 10px #FF0000, 0 0 20px #FF0000;
+    }
+    .hidden {
+      display: none;
+    }
+    input[type="text"] {
+      font-family: 'Courier New', monospace;
+      font-size: 1em;
+      padding: 5px;
+      background: #222;
+      border: 1px solid #39FF14;
+      color: #39FF14;
+    }
+    input[type="submit"] {
+      font-family: 'Courier New', monospace;
+      font-size: 1em;
+      padding: 5px 10px;
+      background: #39FF14;
+      border: none;
+      color: black;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    #container {
+      text-align: center;
+      max-width: 600px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="glow-green">
+      <p>Welcome, provost. Please enter the password to gain access to provost-only info:</p>
+      <form id="passwordForm">
+        <input type="text" id="passwordInput" autocomplete="off" required>
+        <input type="submit" value="Submit">
+      </form>
+      <p id="attemptsMsg" style="color: #FF0000;"></p>
+    </div>
+    
+    <!-- Success Screen -->
+    <div id="successScreen" class="glow-green hidden">
+      <p>
+        Congratulations on passing the test. Text akshay this exact message
+      </p>
+      <p>
+        Roses are red,<br>
+        violets are blue,<br>
+        harris is cute,<br>
+        and so are you.
+      </p>
+      <p>
+        you will gain access to provost-only info if you do, such as pre-team ratings, your own player scouting report, and possibly your own betting line.
+      </p>
+    </div>
+    
+    <!-- Failure Screen -->
+    <div id="failureScreen" class="hidden">
+      <p id="failureMessage" style="font-size:2em;"></p>
+    </div>
+  </div>
+  
+  <script>
+    const passwordForm = document.getElementById("passwordForm");
+    const passwordInput = document.getElementById("passwordInput");
+    const attemptsMsg = document.getElementById("attemptsMsg");
+    const loginScreen = document.getElementById("loginScreen");
+    const successScreen = document.getElementById("successScreen");
+    const failureScreen = document.getElementById("failureScreen");
+    const failureMessage = document.getElementById("failureMessage");
+
+    let attemptCount = 0;
+    const correctPassword = "harris";
+
+    passwordForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const userPass = passwordInput.value.trim().toLowerCase();
+      
+      if (userPass === correctPassword) {
+        // Correct: show success page
+        loginScreen.classList.add("hidden");
+        successScreen.classList.remove("hidden");
+      } else {
+        attemptCount++;
+        if (attemptCount >= 3) {
+          // Failure: show failure screen and start glitch effect
+          loginScreen.classList.add("hidden");
+          failureScreen.classList.remove("hidden");
+          startGlitch();
+        } else {
+          attemptsMsg.textContent = `Incorrect password. You have ${3 - attemptCount} attempt(s) remaining.`;
+          passwordInput.value = "";
+        }
+      }
+    });
+
+    // Glitch effect for failure message:
+    // Combines a glitchy character replacement with an intermittent color flash.
+    function startGlitch() {
+      const baseText = "INTRUDERS ARE NOT PERMITTED.";
+      const glitchChars = '!<>-_\\/[]{}—=+*^?#________';
+      
+      function updateGlitch() {
+        let output = "";
+        // For each character, a 20% chance to display a random glitch character.
+        for (let i = 0; i < baseText.length; i++) {
+          if (Math.random() < 0.2) {
+            output += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+          } else {
+            output += baseText[i];
+          }
+        }
+        failureMessage.textContent = output;
+        // Randomly decide whether to show in red or black:
+        // 30% chance to show the red flash (with glow) for a split second.
+        if (Math.random() < 0.3) {
+          failureMessage.style.color = "#FF0000";
+          failureMessage.classList.add("glow-red");
+        } else {
+          failureMessage.style.color = "black";
+          failureMessage.classList.remove("glow-red");
+        }
+      }
+      // Update the glitch effect repeatedly every 300ms.
+      updateGlitch();
+      setInterval(updateGlitch, 300);
+    }
+  </script>
+</body>
+</html>

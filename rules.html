@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rules</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      overflow: auto;
+      background: black;
+      font-family: 'Poppins', sans-serif;
+    }
+    /* Background Canvas for Drifting White Dots */
+    #drifting-circles {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1; /* Behind everything */
+      pointer-events: none;
+    }
+    /* Navigation Bar (Same across pages) */
+    .nav-bar {
+      display: flex;
+      justify-content: space-around;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+    }
+    .nav-bar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 20px;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+    }
+    .nav-bar a:hover {
+      background-color: #FF6600;
+      border-radius: 10px;
+    }
+    .nav-bar .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .nav-bar .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.8);
+      min-width: 200px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 11;
+    }
+    .nav-bar .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .nav-bar .dropdown-content a {
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      font-weight: 600;
+    }
+    .nav-bar .dropdown-content a:hover {
+      background-color: #FF6600;
+      border-radius: 10px;
+    }
+    /* Main Content Styles */
+    .content {
+      position: relative;
+      margin: 120px auto 30px; /* Extra top margin so content isn't hidden behind the nav bar */
+      text-align: center;
+      color: white;
+      z-index: 1;
+      max-width: 800px;
+      padding: 0 20px;
+    }
+    .content h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    /* Embedded Google Document Styles */
+    .embedded-doc {
+      display: block;
+      margin: 20px auto;
+      width: 90%;
+      height: 600px;
+      background: transparent;
+      border: none;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <div class="nav-bar">
+    <a href="index.html">Home</a>
+    <a href="provosts.html">The Provosts</a>
+    <a href="league_news.html">League News</a>
+    <div class="dropdown">
+      <a href="#">League Info</a>
+      <div class="dropdown-content">
+        <a href="player_info.html">Player Info</a>
+        <a href="teams.html">Teams</a>
+        <a href="standings.html">Standings</a>
+        <a href="rules.html">Rules</a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Background Canvas for Drifting White Dots -->
+  <canvas id="drifting-circles"></canvas>
+  
+  <!-- Main Content Section with Embedded Google Document -->
+  <div class="content">
+    <h1>Rules</h1>
+    <!-- The embedded document uses the "preview" URL for a clean view -->
+    <iframe class="embedded-doc" src="https://docs.google.com/document/d/1rX4XX6EI7-EVHhsatgzfLCdg5VSKOuknino8bksAlb8/preview" allowfullscreen></iframe>
+  </div>
+  
+  <!-- JavaScript for Drifting White Dots Background -->
+  <script>
+    const canvas = document.getElementById('drifting-circles');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const particles = Array.from({ length: 100 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 2 + 0.5,
+      dx: (Math.random() - 0.5) * 0.5,
+      dy: (Math.random() - 0.5) * 0.5,
+      opacity: Math.random()
+    }));
+    
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let p of particles) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+        ctx.fill();
+        p.x += p.dx;
+        p.y += p.dy;
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      }
+      requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>League News Background</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      overflow: auto; /* Enables scrolling */
+      background: black;
+      font-family: 'Poppins', sans-serif;
+    }
+    /* Background Canvas */
+    canvas {
+      display: block;
+      position: fixed; /* Fixed so it stays in place during scroll */
+      top: 0;
+      left: 0;
+      z-index: -1;  /* Behind everything */
+      pointer-events: none;
+    }
+    /* Container for rotating elements (circles and rings) */
+    #rotating-circles {
+      position: fixed; /* Fixed so it stays in place */
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .circle-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+    }
+    /* Pulsing rings */
+    .ring {
+      border: 2px solid white;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulseOpacity 5s infinite alternate;
+      z-index: 1;
+    }
+    .ring.inner {
+      width: 40vmin;
+      height: 40vmin;
+    }
+    .ring.outer {
+      width: 90vmin;
+      height: 90vmin;
+    }
+    /* Rotating circles */
+    .rotating-set {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+    .rotating-set .circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10vmin;
+      height: 10vmin;
+      border: 2px solid white;
+      border-radius: 50%;
+      transform-origin: center;
+    }
+    .rotating-set.inner .circle {
+      animation: spinInner 20s linear infinite;
+    }
+    .rotating-set.outer .circle {
+      animation: spinOuter 30s linear infinite;
+    }
+    @keyframes spinInner {
+      from { transform: translate(-50%, -50%) rotate(calc(var(--i) * 60deg)) translate(20vmin); }
+      to   { transform: translate(-50%, -50%) rotate(calc(var(--i) * 60deg + 360deg)) translate(20vmin); }
+    }
+    @keyframes spinOuter {
+      from { transform: translate(-50%, -50%) rotate(calc(var(--i) * 60deg)) translate(45vmin); }
+      to   { transform: translate(-50%, -50%) rotate(calc(var(--i) * 60deg + 360deg)) translate(45vmin); }
+    }
+    @keyframes pulseOpacity {
+      from { opacity: 0.2; }
+      to   { opacity: 0.8; }
+    }
+    /* Navigation Bar Styles */
+    .nav-bar {
+      display: flex;
+      justify-content: space-around;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+    }
+    .nav-bar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 20px;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+    }
+    .nav-bar a:hover {
+      background-color: #FF6600;
+      border-radius: 10px;
+    }
+    .nav-bar select {
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      border: none;
+      font-weight: 600;
+      padding: 10px;
+      border-radius: 10px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 200px;
+      transition: background-color 0.3s;
+    }
+    .nav-bar select:hover {
+      background-color: #FF6600;
+    }
+    .nav-bar .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .nav-bar .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.8);
+      min-width: 200px;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 11;
+    }
+    .nav-bar .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .nav-bar .dropdown-content a {
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      font-weight: 600;
+    }
+    .nav-bar .dropdown-content a:hover {
+      background-color: #FF6600;
+      border-radius: 10px;
+    }
+    /* Main Content Styles */
+    .content {
+      position: relative;
+      margin: 100px auto 30px;  /* Extra top margin so the content isn't hidden behind the nav bar */
+      text-align: center;
+      color: white;
+      z-index: 4;
+      max-width: 800px;
+      padding: 0 20px;
+    }
+    .content h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    .content img {
+      max-width: 90%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+    /* Navigation Buttons for Fan Zone and Media */
+    .buttons {
+      position: relative;
+      margin: 30px auto;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      z-index: 4;
+    }
+    .btn {
+      padding: 15px 35px;
+      font-size: 1.5em;
+      font-weight: 600;
+      color: black;
+      background-color: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      transition: 0.3s;
+      text-decoration: none;
+      font-family: 'Poppins', sans-serif;
+    }
+    .btn:hover {
+      background-color: white;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 1);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <div class="nav-bar">
+    <a href="index.html">Home</a>
+    <a href="provosts.html">The Provosts</a>
+    <a href="league_news.html">League News</a>
+    <div class="dropdown">
+      <a href="#">League Info</a>
+      <div class="dropdown-content">
+        <a href="player_info.html">Player Info</a>
+        <a href="teams.html">Teams</a>
+        <a href="standings.html">Standings</a>
+        <a href="rules.html">Rules</a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Background Elements -->
+  <canvas id="drifting-circles"></canvas>
+  <div id="rotating-circles">
+    <div class="circle-container">
+      <!-- Pulsing Rings -->
+      <div class="ring inner"></div>
+      <div class="ring outer"></div>
+      <!-- Inner Rotating Circles -->
+      <div class="rotating-set inner">
+        <div class="circle" style="--i: 0"></div>
+        <div class="circle" style="--i: 1"></div>
+        <div class="circle" style="--i: 2"></div>
+        <div class="circle" style="--i: 3"></div>
+        <div class="circle" style="--i: 4"></div>
+        <div class="circle" style="--i: 5"></div>
+      </div>
+      <!-- Outer Rotating Circles -->
+      <div class="rotating-set outer">
+        <div class="circle" style="--i: 0"></div>
+        <div class="circle" style="--i: 1"></div>
+        <div class="circle" style="--i: 2"></div>
+        <div class="circle" style="--i: 3"></div>
+        <div class="circle" style="--i: 4"></div>
+        <div class="circle" style="--i: 5"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main Content Section -->
+  <div class="content">
+    <h1>League News</h1>
+    <img src="BBLStructure.png" alt="BBL Structure">
+  </div>
+  
+  <!-- Navigation Buttons for Fan Zone and Media -->
+  <div class="buttons">
+    <a class="btn" href="fan_zone.html">Fan Zone</a>
+    <a class="btn" href="media.html">Media</a>
+  </div>
+  
+  <!-- JavaScript for Background Particle Animation -->
+  <script>
+    const canvas = document.getElementById('drifting-circles');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const particles = Array.from({ length: 100 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 2 + 0.5,
+      dx: (Math.random() - 0.5) * 0.5,
+      dy: (Math.random() - 0.5) * 0.5,
+      opacity: Math.random()
+    }));
+    
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let p of particles) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+        ctx.fill();
+        p.x += p.dx;
+        p.y += p.dy;
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>

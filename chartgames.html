@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Stats Tracker</title>
+  <link href="https://fonts.googleapis.com/css?family=Bebas+Neue" rel="stylesheet">
+  <style>
+    body { 
+      font-family: 'Bebas Neue', sans-serif; 
+      color: orange; 
+      background-color: black; 
+      padding: 20px; 
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    input, button { 
+      font-family: 'Bebas Neue', sans-serif; 
+      font-size: 16px; 
+    }
+    /* Center container styles */
+    #loginContainer, #mainContainer, #summaryContainer, #overtimeContainer {
+      margin-bottom: 20px;
+      width: 90%;
+      max-width: 800px;
+      text-align: center;
+    }
+    .team { 
+      border: 1px solid orange; 
+      padding: 10px; 
+      margin: 10px;
+      display: inline-block; 
+      vertical-align: top; 
+      width: 45%; 
+      text-align: left;
+    }
+    .team h3 { margin-top: 0; }
+    .players { margin-top: 10px; }
+    .player { margin-bottom: 10px; }
+    .player input[type="text"] { width: 120px; }
+    .statValue { display: inline-block; width: 30px; text-align: center; }
+    .statButtons button { margin-right: 5px; margin-bottom: 5px; }
+    /* Timer styling */
+    #timerContainer { 
+      margin-top: 20px; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #timerDisplay { 
+      font-size: 48px; 
+      margin-bottom: 10px;
+    }
+    #timerButton, #endGameButton, #resetGameButton, #logButton { 
+      font-size: 24px; 
+      padding: 10px 20px;
+      margin: 5px;
+    }
+    /* Current section display */
+    #currentSection {
+      font-size: 24px;
+      margin: 10px 0;
+    }
+    /* Overtime title styling */
+    #overtimeTitle {
+      font-size: 32px;
+      margin-bottom: 10px;
+      display: none;
+    }
+    /* Auto Update container styling */
+    #autoUpdateContainer {
+      margin: 10px 0;
+    }
+    #autoUpdateContainer input {
+      width: 150px;
+      margin: 0 5px;
+    }
+    /* Log container styling */
+    #logContainer {
+      margin-top: 10px;
+      text-align: left;
+      width: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid orange;
+      padding: 10px;
+      display: none;
+      white-space: pre-wrap;
+    }
+    /* Overtime container styling */
+    #overtimeContainer {
+      display: none;
+    }
+    /* Style inputs with orange text and black background */
+    input { 
+      background-color: black; 
+      color: orange; 
+      border: 1px solid orange; 
+      padding: 5px; 
+    }
+    /* Style buttons with orange text on black background */
+    button { 
+      background-color: black; 
+      color: orange; 
+      border: 1px solid orange; 
+      padding: 5px 10px; 
+      cursor: pointer;
+    }
+    /* Adjust placeholder color for inputs */
+    ::placeholder { 
+      color: orange; 
+      opacity: 0.7; 
+    }
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .team {
+        width: 100%;
+        margin: 5px 0;
+      }
+      .player input[type="text"] {
+        width: 100px;
+      }
+      #timerDisplay {
+        font-size: 36px;
+      }
+      #timerButton, #endGameButton, #resetGameButton, #logButton {
+        font-size: 20px;
+        padding: 8px 16px;
+      }
+      #autoUpdateContainer input {
+        width: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Password Login -->
+  <div id="loginContainer">
+    <h2>Please enter the password</h2>
+    <input type="password" id="passwordInput" placeholder="Enter password">
+    <button id="loginButton">Enter</button>
+    <p id="loginMessage" style="color: orange;"></p>
+  </div>
+
+  <!-- Main Content (hidden until correct password) -->
+  <div id="mainContainer" style="display: none;">
+    <!-- Overtime Title (visible during overtime) -->
+    <div id="overtimeTitle">OVERTIME</div>
+    
+    <!-- Current Section Display -->
+    <div id="currentSection">Current Section: Points</div>
+    
+    <!-- Auto Update Section -->
+    <div id="autoUpdateContainer">
+      <input type="text" id="playerInput" placeholder="Player Name">
+      <input type="text" id="actionInput" placeholder="Action (e.g., 3PM, R, A, +, *, TO, X, B, S, -)">
+      <button id="updateStatButton">Update Stat</button>
+    </div>
+    
+    <!-- Stat Buttons -->
+    <div class="statButtons">
+      <button class="statButton" data-stat="P">P</button>
+      <button class="statButton" data-stat="R">R</button>
+      <button class="statButton" data-stat="A">A</button>
+      <button class="statButton" data-stat="good">+</button>
+      <button class="statButton" data-stat="outstanding">*</button>
+      <button class="statButton" data-stat="TO">TO</button>
+      <button class="statButton" data-stat="X">X</button>
+      <button class="statButton" data-stat="B">B</button>
+      <button class="statButton" data-stat="S">S</button>
+      <button class="statButton" data-stat="bad">-</button>
+    </div>
+    
+    <!-- Teams & Players Input -->
+    <div id="teamsContainer">
+      <!-- Team 1 -->
+      <div class="team" id="team1">
+        <h3>Team 1</h3>
+        <input type="text" placeholder="Team Name" class="teamName" data-team="team1">
+        <div class="players">
+          <div class="player" data-team="team1" data-index="0">
+            <input type="text" placeholder="Player 1">
+            <span class="statValue">0</span>
+            <button class="decrement">&larr;</button>
+            <button class="increment">&rarr;</button>
+          </div>
+          <div class="player" data-team="team1" data-index="1">
+            <input type="text" placeholder="Player 2">
+            <span class="statValue">0</span>
+            <button class="decrement">&larr;</button>
+            <button class="increment">&rarr;</button>
+          </div>
+          <div class="player" data-team="team1" data-index="2">
+            <input type="text" placeholder="Player 3">
+            <span class="statValue">0</span>
+            <button class="decrement">&larr;</button>
+            <button class="increment">&rarr;</button>
+          </div>
+          <div class="player" data-team="team1" data-index="3">
+            <input type="text" placeholder="Player 4">
+            <span class="statValue">0</span>
+            <button class="decrement">&larr;</button>
+            <button class="increment">&rarr;</button>
+          </div>
+        </div>
+      </div>
+      <!-- Team 2 -->
+      <div class="team" id="team2">
+        <h3>Team 2</h3>
+        <input type="text" placeholder="Team Name" class="teamName" data-team="team2">
+        <div class="players">
+          <div class="player" data-team="team2" data-index="0">
+            <input type="text" placeholder="Player 1">
+            <span class="statValue">0</span>
+            <button class="decrement">&larr;</button>
+            <button class="increment">&rarr;</button>
+          </div>
+          <div class="player" data-team="team2" data-index="1">
+            <input type="text" placeholder="Player 2">
+            <span class="statValue">0</span>
+            <button class="decrement">&larr;</button>
+            <button class="increment">&rarr;</button>
+          </div>
+          <div class="player" data-team="team2" data-index="2">
+            <input type="text" placeholder="Player 3">
+            <span class="statValue">0</span>
+            <button class="decrement">&larr;</button>
+            <button class="increment">&rarr;</button>
+          </div>
+          <div class="player" data-team="team2" data-index="3">
+            <input type="text" placeholder="Player 4">
+            <span class="statValue">0</span>
+            <button class="decrement">&larr;</button>
+            <button class="increment">&rarr;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Timer -->
+    <div id="timerContainer">
+      <span id="timerDisplay">10:00</span>
+      <div>
+        <button id="timerButton">Start</button>
+        <button id="endGameButton">End Game</button>
+        <button id="logButton">Show Log</button>
+      </div>
+      <!-- Log Container -->
+      <div id="logContainer"></div>
+    </div>
+  </div>
+  
+  <!-- Overtime Prompt Screen -->
+  <div id="overtimeContainer" style="display: none;">
+    <h2>Overtime?</h2>
+    <p>Would you like to add overtime (3 minutes)?</p>
+    <button id="overtimeYes" style="font-size:24px; padding:10px 20px; margin:5px;">Yes</button>
+    <button id="overtimeNo" style="font-size:24px; padding:10px 20px; margin:5px;">No</button>
+  </div>
+  
+  <!-- Summary Screen -->
+  <div id="summaryContainer" style="display: none;">
+    <h2>Game Summary</h2>
+    <div id="summaryContent"></div>
+    <button id="resetGameButton" style="font-size:24px; padding:10px 20px; margin-top:20px;">Reset Game</button>
+  </div>
+  
+  <script>
+    // Global variables
+    let currentStat = "P"; // default view: Points
+    let timerInterval = null;
+    let totalSeconds = 600; // 10 minutes
+    const overtimeSeconds = 180; // 3 minutes overtime period
+    let isOvertime = false;
+    
+    // Log array to store play events
+    let logs = [];
+    
+    // Helper function to return descriptive stat name
+    function getStatName(stat) {
+      const mapping = {
+        "P": "points",
+        "R": "rebounds",
+        "A": "assists",
+        "good": "good plays",
+        "outstanding": "outstanding plays",
+        "TO": "turnovers",
+        "X": "missed shots",
+        "B": "blocks",
+        "S": "steals",
+        "bad": "bad plays"
+      };
+      return mapping[stat] || stat;
+    }
+    
+    // Append a new entry to the log and update log container
+    function addLogEntry(entry) {
+      logs.push(entry);
+      if(document.getElementById("logContainer").style.display !== "none"){
+        updateLogDisplay();
+      }
+    }
+    
+    function updateLogDisplay() {
+      const logContainer = document.getElementById("logContainer");
+      logContainer.innerHTML = logs.join("<br>");
+    }
+    
+    // Initialize teams data with new stats
+    let teams = { team1: [], team2: [] };
+    function initTeams() {
+      teams = { team1: [], team2: [] };
+      for (let i = 0; i < 4; i++) {
+        teams.team1.push({ name: "", P: 0, R: 0, A: 0, good: 0, outstanding: 0, TO: 0, X: 0, B: 0, S: 0, bad: 0 });
+        teams.team2.push({ name: "", P: 0, R: 0, A: 0, good: 0, outstanding: 0, TO: 0, X: 0, B: 0, S: 0, bad: 0 });
+      }
+    }
+    initTeams();
+    
+    // Update current section display text
+    function updateCurrentSectionDisplay() {
+      let sectionText = "";
+      switch (currentStat) {
+        case "P": sectionText = "Points"; break;
+        case "R": sectionText = "Rebounds"; break;
+        case "A": sectionText = "Assists"; break;
+        case "good": sectionText = "Good Plays"; break;
+        case "outstanding": sectionText = "Outstanding Plays"; break;
+        case "TO": sectionText = "Turnovers"; break;
+        case "X": sectionText = "Missed Shots"; break;
+        case "B": sectionText = "Blocks"; break;
+        case "S": sectionText = "Steals"; break;
+        case "bad": sectionText = "Bad Plays"; break;
+        default: sectionText = currentStat;
+      }
+      document.getElementById("currentSection").innerText = "Current Section: " + sectionText;
+    }
+    
+    // Handle Login
+    document.getElementById("loginButton").addEventListener("click", function() {
+      const pwd = document.getElementById("passwordInput").value;
+      if (pwd === "harris") {
+        document.getElementById("loginContainer").style.display = "none";
+        document.getElementById("mainContainer").style.display = "block";
+        updateDisplay();
+        updateCurrentSectionDisplay();
+      } else {
+        document.getElementById("loginMessage").innerText = "Incorrect password, please try again.";
+      }
+    });
+    
+    // Update display for current stat on every player row
+    function updateDisplay() {
+      const playerDivs = document.querySelectorAll(".player");
+      playerDivs.forEach(div => {
+        const team = div.getAttribute("data-team");
+        const index = div.getAttribute("data-index");
+        const statValueSpan = div.querySelector(".statValue");
+        statValueSpan.innerText = teams[team][index][currentStat];
+      });
+    }
+    
+    // Listen for stat button clicks to change view
+    document.querySelectorAll(".statButton").forEach(button => {
+      button.addEventListener("click", function() {
+        currentStat = this.getAttribute("data-stat");
+        updateDisplay();
+        updateCurrentSectionDisplay();
+      });
+    });
+    
+    // Event delegation for increment and decrement buttons (and log these actions)
+    document.getElementById("teamsContainer").addEventListener("click", function(e) {
+      if (e.target.classList.contains("increment") || e.target.classList.contains("decrement")) {
+        const playerDiv = e.target.closest(".player");
+        const team = playerDiv.getAttribute("data-team");
+        const index = playerDiv.getAttribute("data-index");
+        const playerName = teams[team][index].name || ("Player " + (parseInt(index)+1));
+        if (e.target.classList.contains("increment")) {
+          teams[team][index][currentStat]++;
+          addLogEntry(`${playerName} +1 ${getStatName(currentStat)}`);
+        } else {
+          teams[team][index][currentStat]--;
+          addLogEntry(`${playerName} -1 ${getStatName(currentStat)}`);
+        }
+        updateDisplay();
+      }
+    });
+    
+    // Update players' names as they type
+    document.querySelectorAll("#teamsContainer .player input[type='text']").forEach((input) => {
+      input.addEventListener("input", function() {
+        const playerDiv = this.parentElement;
+        const team = playerDiv.getAttribute("data-team");
+        const index = playerDiv.getAttribute("data-index");
+        teams[team][index].name = this.value;
+      });
+    });
+    
+    // Update team names as they type
+    document.querySelectorAll(".teamName").forEach((input) => {
+      input.addEventListener("input", function() {
+        const team = this.getAttribute("data-team");
+        teams[team].teamName = this.value;
+      });
+    });
+    
+    // Auto update function based on language input
+    document.getElementById("updateStatButton").addEventListener("click", function() {
+      const playerNameInput = document.getElementById("playerInput").value.trim();
+      const actionInput = document.getElementById("actionInput").value.trim().toUpperCase();
+      if(playerNameInput === "" || actionInput === "") return;
+      
+      // Mapping of actions to stat updates
+      const statMap = {
+        "2PM": { stat: "P", value: 2 },
+        "3PM": { stat: "P", value: 3 },
+        "R": { stat: "R", value: 1 },
+        "A": { stat: "A", value: 1 },
+        "+": { stat: "good", value: 1 },
+        "*": { stat: "outstanding", value: 1 },
+        "TO": { stat: "TO", value: 1 },
+        "X": { stat: "X", value: 1 },
+        "B": { stat: "B", value: 1 },
+        "S": { stat: "S", value: 1 },
+        "-": { stat: "bad", value: 1 }
+      };
+      
+      if(!(actionInput in statMap)) {
+        alert("Action not recognized.");
+        return;
+      }
+      const statUpdate = statMap[actionInput];
+      let updated = false;
+      // Search for the player in both teams and update stat
+      for(let team in teams){
+        for(let i = 0; i < teams[team].length; i++){
+          if(teams[team][i].name.toLowerCase() === playerNameInput.toLowerCase()){
+            teams[team][i][statUpdate.stat] += statUpdate.value;
+            addLogEntry(`${teams[team][i].name} ${actionInput}`);
+            updated = true;
+          }
+        }
+      }
+      if(!updated) {
+        alert("Player not found.");
+      }
+      updateDisplay();
+      document.getElementById("playerInput").value = "";
+      document.getElementById("actionInput").value = "";
+    });
+    
+    // Timer functionality
+    function updateTimerDisplay() {
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      document.getElementById("timerDisplay").innerText =
+        String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
+    }
+    
+    function startTimer() {
+      timerInterval = setInterval(function() {
+        if (totalSeconds > 0) {
+          totalSeconds--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          promptOvertime();
+        }
+      }, 1000);
+    }
+    
+    // Timer button toggles start and pause (pause does not trigger overtime)
+    document.getElementById("timerButton").addEventListener("click", function() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        this.innerText = "Start";
+      } else {
+        startTimer();
+        this.innerText = "Stop";
+      }
+    });
+    
+    // End game button prompts overtime
+    document.getElementById("endGameButton").addEventListener("click", function() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      promptOvertime();
+    });
+    
+    // Log button toggles log container display
+    document.getElementById("logButton").addEventListener("click", function() {
+      const logContainer = document.getElementById("logContainer");
+      if(logContainer.style.display === "none" || logContainer.style.display === ""){
+        updateLogDisplay();
+        logContainer.style.display = "block";
+        this.innerText = "Hide Log";
+      } else {
+        logContainer.style.display = "none";
+        this.innerText = "Show Log";
+      }
+    });
+    
+    // Overtime prompt functionality
+    function promptOvertime() {
+      document.getElementById("mainContainer").style.display = "none";
+      document.getElementById("summaryContainer").style.display = "none";
+      document.getElementById("overtimeContainer").style.display = "block";
+    }
+    
+    // Overtime buttons event listeners
+    document.getElementById("overtimeYes").addEventListener("click", function() {
+      document.getElementById("overtimeContainer").style.display = "none";
+      isOvertime = true;
+      document.getElementById("overtimeTitle").style.display = "block";
+      totalSeconds = overtimeSeconds;
+      updateTimerDisplay();
+      document.getElementById("mainContainer").style.display = "block";
+      document.getElementById("timerButton").innerText = "Stop";
+      startTimer();
+    });
+    
+    document.getElementById("overtimeNo").addEventListener("click", function() {
+      document.getElementById("overtimeContainer").style.display = "none";
+      document.getElementById("overtimeTitle").style.display = "none";
+      isOvertime = false;
+      showSummary();
+    });
+    
+    // Show summary screen
+    function showSummary() {
+      document.getElementById("mainContainer").style.display = "none";
+      const summaryContent = document.getElementById("summaryContent");
+      summaryContent.innerHTML = "";
+      ["team1", "team2"].forEach(teamKey => {
+        const teamDiv = document.createElement("div");
+        teamDiv.style.marginBottom = "20px";
+        const teamName = teams[teamKey].teamName || (teamKey === "team1" ? "Team 1" : "Team 2");
+        teamDiv.innerHTML = `<h3>${teamName}</h3>`;
+        teams[teamKey].forEach((player, idx) => {
+          const playerName = player.name || ("Player " + (idx + 1));
+          const playerStats = `
+            <strong>${playerName}</strong>: 
+            Points: ${player.P}, 
+            Rebounds: ${player.R}, 
+            Assists: ${player.A}, 
+            Good Plays: ${player.good}, 
+            Outstanding Plays: ${player.outstanding}, 
+            Turnovers: ${player.TO}, 
+            Missed Shots: ${player.X}, 
+            Blocks: ${player.B}, 
+            Steals: ${player.S}, 
+            Bad Plays: ${player.bad}
+          `;
+          const p = document.createElement("p");
+          p.innerHTML = playerStats;
+          teamDiv.appendChild(p);
+        });
+        summaryContent.appendChild(teamDiv);
+      });
+      document.getElementById("summaryContainer").style.display = "block";
+    }
+    
+    // Reset game functionality
+    document.getElementById("resetGameButton").addEventListener("click", function() {
+      document.getElementById("summaryContainer").style.display = "none";
+      document.getElementById("mainContainer").style.display = "block";
+      totalSeconds = 600;
+      updateTimerDisplay();
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        document.getElementById("timerButton").innerText = "Start";
+      }
+      currentStat = "P";
+      updateCurrentSectionDisplay();
+      initTeams();
+      document.querySelectorAll(".teamName").forEach(input => input.value = "");
+      document.querySelectorAll(".player").forEach(playerDiv => {
+        const input = playerDiv.querySelector("input[type='text']");
+        if(input) input.value = "";
+        const statValueSpan = playerDiv.querySelector(".statValue");
+        statValueSpan.innerText = "0";
+      });
+      document.getElementById("overtimeTitle").style.display = "none";
+      isOvertime = false;
+      logs = [];
+      document.getElementById("logContainer").innerHTML = "";
+      document.getElementById("logContainer").style.display = "none";
+      document.getElementById("logButton").innerText = "Show Log";
+    });
+    
+    updateTimerDisplay();
+  </script>
+</body>
+</html>

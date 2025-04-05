@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Hall of Fame</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+      font-family: 'Courier New', monospace;
+      color: #39FF14;
+    }
+    /* Fullscreen canvas background */
+    #bgCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: block;
+      z-index: 0; /* Set to a lower value so it's in the background */
+      pointer-events: none; /* Allow clicks to pass through the canvas */
+    }
+    /* Content container */
+    #container {
+      position: relative;
+      z-index: 1; /* Ensure this is above the canvas */
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-shadow: 0 0 5px #39FF14;
+    }
+    p {
+      font-size: 1.2em;
+      line-height: 1.5;
+      text-shadow: 0 0 3px #39FF14;
+    }
+    ol {
+      list-style: decimal inside;
+      padding: 0;
+      margin-top: 20px;
+      text-align: left;
+      font-size: 1.5em;
+    }
+    li {
+      margin: 15px 0;
+      cursor: default;
+    }
+    .clickable {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Canvas for falling green squares -->
+  <canvas id="bgCanvas"></canvas>
+
+  <div id="container">
+    <h1>The Hall of Fame</h1>
+    <p>
+      The hall of fame exists to honor the pioneers of the BBL, those who advanced it, and those who paved the way for those to come.
+    </p>
+    <ol>
+      <li id="provostItem" class="clickable">
+        The <span id="provostNumber">4</span> provosts.
+      </li>
+      <li>
+        shravan narayanan, who found the hidden secrets of the BBL.
+      </li>
+      <li id="harrisItem" class="clickable">harris</li>
+      <li id="omarItem">omar, for supplying the league with water.</li>
+      <li>
+        you, for finding this page.
+      </li>
+      <li>
+        [REDACTED]
+      </li>
+    </ol>
+  </div>
+
+  <script>
+    /********************
+     * Falling Green Squares Background
+     ********************/
+    const canvas = document.getElementById("bgCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    // Define the Square class.
+    class Square {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.size = Math.random() * 20 + 5; // Size between 5 and 25
+        this.x = Math.random() * canvas.width;
+        // Start at a random position above the canvas.
+        this.y = Math.random() * -canvas.height;
+        this.speed = Math.random() * 3 + 1; // Speed between 1 and 4
+        this.alpha = Math.random() * 0.5 + 0.5; // Opacity between 0.5 and 1.0
+      }
+      update() {
+        this.y += this.speed;
+        if (this.y > canvas.height) {
+          this.reset();
+          this.y = 0;
+        }
+      }
+      draw() {
+        ctx.fillStyle = `rgba(57,255,20,${this.alpha})`;
+        ctx.fillRect(this.x, this.y, this.size, this.size);
+      }
+    }
+
+    // Create many squares.
+    const numSquares = 300;
+    const squares = [];
+    for (let i = 0; i < numSquares; i++) {
+      squares.push(new Square());
+    }
+
+    function animateBackground() {
+      // Clear the canvas completely each frame.
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      squares.forEach(square => {
+        square.update();
+        square.draw();
+      });
+      requestAnimationFrame(animateBackground);
+    }
+    animateBackground();
+
+    /********************
+     * Provost Number Glitch Effect (for #1)
+     ********************/
+    const provostNumberEl = document.getElementById("provostNumber");
+    const provostItemEl = document.getElementById("provostItem");
+    const glitchChars = '!<>-_\\/[]{}—=+*^?#________';
+
+    // Return a random glitch string (2 to 4 characters long)
+    function randomGlitchString() {
+      const length = Math.floor(Math.random() * 3) + 2;
+      let str = "";
+      for (let i = 0; i < length; i++) {
+        str += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+      }
+      return str;
+    }
+
+    // Cycle through states: "4" → random glitch → "3" → random glitch → "4"
+    let glitchStates = ["4", null, "3", null, "4"];
+    let currentState = 0;
+    const glitchInterval = setInterval(() => {
+      if (currentState === 1 || currentState === 3) {
+        provostNumberEl.textContent = randomGlitchString();
+      } else {
+        provostNumberEl.textContent = glitchStates[currentState];
+      }
+      currentState = (currentState + 1) % glitchStates.length;
+    }, 500);
+
+    // On-click for provost item: Glitch reveal effect.
+    provostItemEl.addEventListener("click", () => {
+      clearInterval(glitchInterval);
+      glitchReveal(provostNumberEl, "[REDACTED, CLASSIFIED INFO]", 50);
+    });
+
+    // Glitch reveal function: gradually replace random characters with the final text.
+    function glitchReveal(element, finalText, speed) {
+      let iterations = 0;
+      const finalLength = finalText.length;
+      let interval = setInterval(() => {
+        let displayText = "";
+        for (let i = 0; i < finalLength; i++) {
+          if (i < iterations) {
+            displayText += finalText[i];
+          } else {
+            displayText += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+          }
+        }
+        element.textContent = displayText;
+        // Flash effect: occasionally show red with a glow.
+        if (Math.random() < 0.3) {
+          element.style.color = "#FF0000";
+          element.style.textShadow = "0 0 10px #FF0000, 0 0 20px #FF0000";
+        } else {
+          element.style.color = "#39FF14";
+          element.style.textShadow = "0 0 5px #39FF14";
+        }
+        iterations++;
+        if (iterations > finalLength) {
+          clearInterval(interval);
+          element.textContent = finalText;
+          element.style.color = "#FF0000";
+          element.style.textShadow = "0 0 10px #FF0000, 0 0 20px #FF0000";
+        }
+      }, speed);
+    }
+
+    /********************
+     * Harris Rainbow Flash Effect (#3)
+     ********************/
+    const harrisItemEl = document.getElementById("harrisItem");
+    const rainbowColors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+
+    function startRainbowFlash(element, intervalTime = 100, duration = 3000) {
+      let index = 0;
+      const flashInterval = setInterval(() => {
+        element.style.color = rainbowColors[index % rainbowColors.length];
+        index++;
+      }, intervalTime);
+      setTimeout(() => {
+        clearInterval(flashInterval);
+        element.style.color = "#39FF14"; // revert to neon green
+      }, duration);
+    }
+
+    // When "harris" is clicked, trigger the rainbow flash.
+    harrisItemEl.addEventListener("click", () => {
+      startRainbowFlash(harrisItemEl);
+    });
+  </script>
+</body>
+</html>

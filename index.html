@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Bonita Basketball League</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
   <style>
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       font-family: 'Poppins', sans-serif;
@@ -14,22 +14,91 @@
       color: white;
       overflow-x: hidden;
     }
-    
+    /* Navigation Bar */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+    }
+    nav ul li {
+      margin: 0 15px;
+      position: relative;
+    }
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+      font-size: 1em;
+      padding: 8px 12px;
+      transition: background 0.3s;
+    }
+    nav ul li a:hover {
+      background: #FF6600;
+      border-radius: 4px;
+    }
+    /* Dropdown Menu Style */
+    .dropdown > a:after {
+      content: ' ▼';
+      font-size: 0.8em;
+    }
+    .dropdown ul {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 10px 0;
+      list-style: none;
+      min-width: 150px;
+      border-radius: 4px;
+    }
+    .dropdown ul li {
+      margin: 0;
+    }
+    .dropdown ul li a {
+      display: block;
+      padding: 8px 15px;
+      white-space: nowrap;
+    }
+    .dropdown:hover ul {
+      display: block;
+    }
+    /* Canvas covers entire viewport and is behind everything */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+    /* Content Wrapper */
     .wrapper {
       position: relative;
+      z-index: 2;
       text-align: center;
-      padding: 100px 20px;
+      padding: 120px 20px 150px; /* extra top padding to clear nav, bottom for button space */
       max-width: 90%;
       margin: auto;
-      z-index: 2;
+      background: transparent;
     }
-    
     h1 {
       font-size: 4.5em;
       letter-spacing: 3px;
       font-weight: 600;
+      margin-bottom: 20px;
     }
-    
     .headline {
       font-size: 2.2em;
       line-height: 1.8;
@@ -37,42 +106,84 @@
       max-width: 80%;
       margin: 20px auto;
     }
-    
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
+    /* Modern styled Instagram button */
+    .cta-button {
+      display: inline-block;
+      background-color: #FF6600;
+      color: white;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      text-decoration: none;
+      border: none;
+      border-radius: 50px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      margin-top: 40px;
+    }
+    .cta-button:hover {
+      background-color: #e55b00;
+      transform: translateY(-3px);
+    }
+    /* NEW: JOIN THE MADNESS! Button Styles */
+    .join-button {
+      background-color: rgba(255,255,255,0.9) !important;
+      color: black !important;
+      box-shadow: 0 0 25px rgba(255,255,255,0.8) !important;
+    }
+    .join-button:hover {
+      background-color: rgba(255,255,255,1) !important;
     }
   </style>
 </head>
 <body>
+  <!-- Navigation Bar -->
+  <nav>
+    <ul>
+      <li><a href="provosts.html">The Provosts</a></li>
+      <li class="dropdown">
+        <a href="#">League Information</a>
+        <ul>
+          <li><a href="player_info.html">Player Info</a></li>
+          <li><a href="teams.html">Teams</a></li>
+          <li><a href="standings.html">Standings</a></li>
+        </ul>
+      </li>
+      <li><a href="league_news.html">League News</a></li>
+      <li><a href="rules.html">Rules</a></li>
+    </ul>
+  </nav>
+  
+  <!-- Canvas Background with Animated Particles and Connections -->
   <canvas id="backgroundCanvas"></canvas>
+  
+  <!-- Content Wrapper -->
   <div class="wrapper">
     <h1>The Bonita Basketball League</h1>
-    <p class="headline">6 TEAMS, 24 PLAYERS, ONLY ONE WINNER, AND ONE VERY VERY UNLUCKY LOSER.</p>
+    <p class="headline">6 TEAMS, 24 PLAYERS, ONLY ONE  <a href="password.html" style="color: #ffffff; text-decoration: none;">WINNER</a>, AND ONE VERY VERY UNLUCKY LOSER.</p>
     <p class="headline">Bonita Park's greatest stars compete to see just who is the best of them all.</p>
     <p class="headline">The top gets fame, glory, and free El Queso.</p>
-    <p class="headline">The bottom must go to Macy's and buy the biggest bra they can find. Straight faced. No shame. On video. For all to see.</p>
+    <p class="headline">The bottom must go to Macy's and buy the biggest bra they can find. Straight faced. No shame. On video. For <a href="hall_of_fame.html" style="color: #ffffff; text-decoration: none;">all to see</a></p>
+    <a class="cta-button" href="https://www.instagram.com/bonitabasketballleague/" target="_blank">Follow our Instagram!</a>
+    
+    <!-- NEW BUTTON: JOIN THE MADNESS! -->
+    <a class="cta-button join-button" href="https://forms.gle/EGnXAEQzWhseop1H7" style="margin-top: 20px;">JOIN THE MADNESS!</a>
   </div>
-
+  
   <script>
     const canvas = document.getElementById('backgroundCanvas');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
+    
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
     window.addEventListener('resize', resizeCanvas);
-
+    
     let particles = [];
     const numParticles = 200;
-
+    
     class Particle {
       constructor() {
         this.x = Math.random() * canvas.width;
@@ -91,37 +202,38 @@
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 102, 0, ${this.opacity})`;
+        ctx.fillStyle = `rgba(255,102,0, ${this.opacity})`;
         ctx.fill();
       }
     }
-
+    
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < numParticles; i++) {
+        particles.push(new Particle());
+      }
+    }
+    
     function drawConnections() {
+      const connectionThreshold = 120;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           let dx = particles[i].x - particles[j].x;
           let dy = particles[i].y - particles[j].y;
           let distance = Math.sqrt(dx * dx + dy * dy);
-          let maxDistance = 120;
-          if (distance < maxDistance) {
-            let opacity = 1 - distance / maxDistance;
-            ctx.strokeStyle = `rgba(200, 200, 200, ${opacity})`;
-            ctx.lineWidth = 1;
+          if (distance < connectionThreshold) {
+            let lineOpacity = 1 - distance / connectionThreshold;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(200,200,200, ${lineOpacity.toFixed(2)})`;
+            ctx.lineWidth = 1;
             ctx.stroke();
           }
         }
       }
     }
-
-    function initParticles() {
-      for (let i = 0; i < numParticles; i++) {
-        particles.push(new Particle());
-      }
-    }
-
+    
     function animateParticles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(particle => {
@@ -131,7 +243,7 @@
       drawConnections();
       requestAnimationFrame(animateParticles);
     }
-
+    
     initParticles();
     animateParticles();
   </script>
