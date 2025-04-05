@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Standings | Bonita Basketball League</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: black;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    .nav-bar {
+      display: flex;
+      justify-content: space-around;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+    .nav-bar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 20px;
+      transition: background-color 0.3s;
+      border-radius: 10px;
+    }
+    .nav-bar a:hover {
+      background-color: #FF6600;
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.7);
+      min-width: 160px;
+      z-index: 101;
+      border-radius: 10px;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-content a {
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      display: block;
+      font-weight: 600;
+      transition: background-color 0.3s;
+      border-radius: 10px;
+    }
+    .dropdown-content a:hover {
+      background-color: #FF6600;
+    }
+
+    .container {
+      padding: 120px 20px 40px;
+      margin-top: 80px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    .container h1 {
+      text-align: center;
+      color: #FF0000;
+      font-size: 2.8em;
+      margin-bottom: 20px;
+    }
+
+    .rules-box {
+      background-color: #000;
+      border: 2px solid #FF0000;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 40px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+      text-align: left;
+    }
+    .rules-box h2 {
+      margin-top: 0;
+      color: #FF0000;
+      font-size: 1.8em;
+    }
+    .rules-box ul {
+      list-style: disc;
+      margin-left: 20px;
+      padding-left: 0;
+    }
+    .rules-box li {
+      font-size: 1.2em;
+      line-height: 1.6;
+    }
+
+    .standings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, auto);
+      gap: 30px;
+      padding: 20px;
+    }
+
+    .standing-box {
+      background-color: #000;
+      border: 2px solid #FF0000;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+      transition: transform 0.3s;
+    }
+    .standing-box:hover {
+      transform: scale(1.02);
+    }
+    .standing-box h2 {
+      color: #FF0000;
+      font-size: 1.8em;
+      margin: 0 0 10px;
+    }
+    .standing-box p {
+      font-size: 1.2em;
+      margin: 0;
+    }
+
+    #backgroundCanvas, #glowCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
+
+    #backgroundCanvas {
+      z-index: 0;
+    }
+
+    #glowCanvas {
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-bar">
+    <a href="index.html">Home</a>
+    <a href="provosts.html">Provosts</a>
+    <a href="league_news.html">League News</a>
+    <div class="dropdown">
+      <a href="#">League Info</a>
+      <div class="dropdown-content">
+        <a href="player_info.html">Player Info</a>
+        <a href="teams.html">Teams</a>
+        <a href="standings.html">Standings</a>
+        <a href="rules.html">Rules</a>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="backgroundCanvas"></canvas>
+  <canvas id="glowCanvas"></canvas>
+
+  <div class="container">
+    <h1>Standings</h1>
+
+    <div class="rules-box">
+      <h2>Ordering Rules</h2>
+      <ul>
+        <li>A team will be ahead of another if they have a better overall record than the other.</li>
+        <li>If teams have the same overall, the team with a better head-to-head record will be ahead of the other.</li>
+        <li>If the teams are still tied, then the team with a better point differential over all games will be ahead of the other.</li>
+      </ul>
+    </div>
+
+    <div class="standings-grid">
+      <div class="standing-box">
+        <h2>#1</h2>
+        <p>Soham's Skibs (2-0)</p>
+      </div>
+      <div class="standing-box">
+        <h2>#2</h2>
+        <p>Swiss Cheesers (2-0)</p>
+      </div>
+      <div class="standing-box">
+        <h2>#3</h2>
+        <p>Green Gooner Goblins (1-1)</p>
+      </div>
+      <div class="standing-box">
+        <h2>#4</h2>
+        <p>Ashwinners (1-1)</p>
+      </div>
+      <div class="standing-box">
+        <h2>#5</h2>
+        <p>The Jackson 5 (0-2)</p>
+      </div>
+      <div class="standing-box">
+        <h2>#6</h2>
+        <p>Golden State Gooners (0-2)</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const glowCanvas = document.getElementById('glowCanvas');
+    const ctx = glowCanvas.getContext('2d');
+
+    function resizeCanvas() {
+      glowCanvas.width = window.innerWidth;
+      glowCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    let time = 0;
+
+    function animate() {
+      ctx.clearRect(0, 0, glowCanvas.width, glowCanvas.height);
+      ctx.lineWidth = 10;
+      ctx.shadowColor = 'rgba(255, 0, 0, 1)';
+      ctx.shadowBlur = 25;
+      ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
+
+      const path = new Path2D();
+      const offset = 80; // Avoid navigation bar
+      const w = glowCanvas.width;
+      const h = glowCanvas.height;
+      const t = time * 0.002;
+
+      path.moveTo(offset + Math.sin(t) * 20, offset);
+      path.lineTo(w - offset - Math.cos(t) * 20, offset);
+      path.lineTo(w - offset, h - offset - Math.sin(t) * 20);
+      path.lineTo(offset + Math.cos(t) * 20, h - offset);
+      path.closePath();
+
+      ctx.stroke(path);
+      time++;
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Teams | Bonita Basketball League</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: black;
+      color: white;
+      overflow-x: hidden;
+    }
+   
+    /* Navigation Bar (similar to previous pages) */
+    .nav-bar {
+      display: flex;
+      justify-content: space-around;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+    .nav-bar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 20px;
+      transition: 0.3s;
+      border-radius: 10px;
+    }
+    .nav-bar a:hover {
+      background-color: #FF6600;
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.8);
+      min-width: 160px;
+      z-index: 101;
+      border-radius: 10px;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-content a {
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      display: block;
+      font-weight: 600;
+      transition: 0.3s;
+      border-radius: 10px;
+    }
+    .dropdown-content a:hover {
+      background-color: #FF6600;
+    }
+   
+    /* Main Content */
+    .container {
+      padding: 100px 20px 40px;
+      margin-top: 80px;
+    }
+   
+    /* Teams title larger than boxes' font size */
+    .container h1 {
+      text-align: center;
+      color: #FF0000;
+      font-size: 3.5em; /* Increased from 2.8em */
+      margin-bottom: 20px;
+    }
+   
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, auto);
+      gap: 30px;
+      padding: 20px;
+    }
+   
+    .team-card {
+      background-color: #000;
+      border: 2px solid #FF0000;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+      transition: transform 0.3s;
+    }
+   
+    .team-card:hover {
+      transform: scale(1.02);
+    }
+   
+    .team-card h2 {
+      font-size: 1.8em;
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #FF0000;
+    }
+   
+    .team-card ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      font-size: 1.1em;
+    }
+   
+    .team-card ul li {
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+   
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .team-card h2 {
+        font-size: 1.5em;
+      }
+      .team-card ul {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <div class="nav-bar">
+    <a href="index.html">Home</a>
+    <a href="provosts.html">Provosts</a>
+    <a href="league_news.html">League News</a>
+    <div class="dropdown">
+      <a href="#">League Info</a>
+      <div class="dropdown-content">
+        <a href="player_info.html">Player Info</a>
+        <a href="teams.html">Teams</a>
+        <a href="standings.html">Standings</a>
+        <a href="rules.html">Rules</a>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Main Content -->
+  <div class="container">
+    <h1 style="text-align:center; color:#FF0000;">Teams</h1>
+    <div class="team-grid">
+      <!-- Golden State Gooners -->
+      <div class="team-card">
+        <h2>Golden State Gooners</h2>
+        <ul>
+          <li>Ashwin Thomas</li>
+          <li>Omar Ismaiel</li>
+          <li>Abir Bakshi</li>
+          <li id="harris" onclick="window.location.href='secret_game.html'">Harris Choudry</li>
+        </ul>
+      </div>
+      <!-- Soham's Skibs -->
+      <div class="team-card">
+        <h2>Soham's Skibs</h2>
+        <ul>
+          <li id="jay">Jay Goyal</li>
+          <li>Ameya Chaturvedi</li>
+          <li>Khaja Ayaan</li>
+          <li>Soham Mule</li>
+        </ul>
+      </div>
+      <!-- Swiss Cheesers -->
+      <div class="team-card">
+        <h2>Swiss Cheesers</h2>
+        <ul>
+          <li>Mithran Regupathy</li>
+          <li>Shourya Sharma</li>
+          <li>Eshan Mahuli</li>
+          <li>Raghav Gupta</li>
+        </ul>
+      </div>
+      <!-- The Jackson 5 -->
+      <div class="team-card">
+        <h2>The Jackson 5</h2>
+        <ul>
+          <li id="shayan">Shayan Parikh</li>
+          <li>Shuopu Wang</li>
+          <li>Dev Arora</li>
+          <li>Shravan Narayanan</li>
+        </ul>
+      </div>
+      <!-- Green Gooner Goblins -->
+      <div class="team-card">
+        <h2>Green Gooner Goblins</h2>
+        <ul>
+          <li>Omkar Vasa</li>
+          <li>Yash Dharankar</li>
+          <li>Pratt Penumarthy</li>
+          <li>Ebad Quraishi</li>
+        </ul>
+      </div>
+      <!-- Ashwinners -->
+      <div class="team-card">
+        <h2>Ashwinners</h2>
+        <ul>
+          <li>Wentao Xie</li>
+          <li>Abdirahman Omar</li>
+          <li>Parasuram Muralikumar</li>
+          <li id="akshay">Akshay Bhaskar</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Track the state for glitch effect on specific names
+    let clickedNames = {
+      akshay: false,
+      jay: false,
+      shayan: false
+    };
+
+    function checkGlitch() {
+      if (clickedNames.akshay && clickedNames.jay && clickedNames.shayan) {
+        window.location.href = "provost_info.html";
+      }
+    }
+
+    document.getElementById('akshay').addEventListener('click', function() {
+      this.style.color = "red"; // Glitch effect: change text to red
+      clickedNames.akshay = true;
+      checkGlitch();
+    });
+
+    document.getElementById('jay').addEventListener('click', function() {
+      this.style.color = "red";
+      clickedNames.jay = true;
+      checkGlitch();
+    });
+
+    document.getElementById('shayan').addEventListener('click', function() {
+      this.style.color = "red";
+      clickedNames.shayan = true;
+      checkGlitch();
+    });
+  </script>
+</body>
+</html>
