@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player of the Week | Bonita Basketball League</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* General Page Styling */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: black;
+      color: white;
+      overflow-x: hidden;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    
+    /* Navigation Bar */
+    .nav-bar {
+      display: flex;
+      justify-content: space-around;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 5;
+    }
+    
+    .nav-bar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 20px;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+    }
+    
+    .nav-bar a:hover {
+      background-color: #FF6600;
+      border-radius: 10px;
+    }
+    
+    /* Dropdown menu style with transparent black background */
+    .dropdown {
+      position: relative;
+    }
+    
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.7);
+      min-width: 160px;
+      z-index: 6;
+    }
+    
+    .dropdown-content a {
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      display: block;
+    }
+    
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    
+    /* Wrapper for main content */
+    .wrapper {
+      text-align: center;
+      padding: 80px 20px;
+      z-index: 4;
+      flex-grow: 1;
+      position: relative;
+    }
+    
+    .headline {
+      font-size: 1.5em;
+      line-height: 1.8;
+      font-weight: 300;
+      max-width: 80%;
+      margin: 20px auto;
+    }
+    
+    .player-of-week {
+      margin-top: 40px;
+      text-align: center;
+    }
+    
+    .player-of-week h2 {
+      font-size: 2em;
+      font-weight: 600;
+      color: #FF6600;
+    }
+    
+    .player-info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-top: 40px;
+    }
+    
+    .player-info img {
+      border-radius: 8px;
+      width: 250px;
+      height: 250px;
+      object-fit: cover;
+    }
+    
+    .player-info .text {
+      max-width: 600px;
+      font-size: 1.2em;
+      line-height: 1.6;
+    }
+    
+    /* Rotating Lines & Circle Background */
+    /* Fullscreen canvas for connecting lines (rotating lines) */
+    #canvas-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    /* Main rotating circle */
+    .circle-container {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      z-index: 2;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    /* Smaller stationary circles */
+    .stationary-circle {
+      position: fixed;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      z-index: 2;
+    }
+    
+    #left-circle {
+      left: 50px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    #right-circle {
+      right: 50px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    /* Rotating lines styling */
+    .line {
+      position: absolute;
+      width: 8px;
+      height: 180px;
+      background-color: #FF6600;
+      transform-origin: 50% 100%;
+      animation: fade 4s infinite ease-in-out;
+    }
+    
+    @keyframes fade {
+      0%   { opacity: 0.8; }
+      50%  { opacity: 0.4; }
+      100% { opacity: 0.8; }
+    }
+    
+    /* Form container styling */
+    .form-container {
+      position: relative;
+      z-index: 4;
+      margin: 40px auto;
+      max-width: 640px;
+      width: 100%;
+    }
+    
+    .form-container iframe {
+      width: 100%;
+      height: 800px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Elements -->
+  <!-- Canvas for rotating lines and connections -->
+  <canvas id="canvas-overlay"></canvas>
+  
+  <!-- Main rotating circle -->
+  <div class="circle-container" id="circle-container"></div>
+  
+  <!-- Stationary circles -->
+  <div class="stationary-circle" id="left-circle"></div>
+  <div class="stationary-circle" id="right-circle"></div>
+  
+  <!-- Navigation Bar -->
+  <div class="nav-bar">
+    <a href="index.html">Home</a>
+    <a href="provosts.html">Provosts</a>
+    <a href="league_news.html">League News</a>
+    <div class="dropdown">
+      <a href="#" class="dropdown-btn">League Info</a>
+      <div class="dropdown-content">
+        <a href="player_info.html">Player Info</a>
+        <a href="teams.html">Teams</a>
+        <a href="standings.html">Standings</a>
+        <a href="rules.html">Rules</a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="wrapper">
+    <h1>Player of the Week</h1>
+    <div class="player-of-week">
+      <h2>This week's player is Omkar Vasa</h2>
+      <div class="player-info">
+        <img src="omkar.png" alt="Omkar Vasa">
+        <div class="text">
+          <p>Whether in good times or bad, Omkar Vasa had always stepped it up. The player of the week averaged 9.5 points per game - leading the league. His most impressive performance last week was his 12 points against the Ashwinners, carrying the Green Goblin Gooners to a 19-0 victory. In addition, he racked up 2 rebounds and one assist. <strong>GO BALLS!</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Form Embed Section -->
+  <div class="form-container">
+    <iframe src="https://forms.gle/weajtApQryFcpsvP9">Loading…</iframe>
+  </div>
+  
+  <script>
+    /* ===== Rotating Lines, Circle, and Stationary Circles Animation ===== */
+    const canvas = document.getElementById('canvas-overlay');
+    const ctx = canvas.getContext('2d');
+    // Set canvas size to full viewport.
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const circle = document.getElementById('circle-container');
+    const circleRadius = circle.offsetWidth / 2;
+    const numLines = 6;
+    const lineLength = 180;
+    const lineWidth = 8;
+    
+    // Speeds for rotation.
+    const baseSpeed = 0.001;   // Base rotation (reversed)
+    const innerSpeed = 0.0005; // Rotation of free endpoint relative to base
+
+    // Array to hold far endpoints of rotating lines (in viewport coordinates).
+    let endpoints = [];
+
+    // Create the rotating lines inside the main circle.
+    function createLines() {
+      for (let i = 0; i < numLines; i++) {
+        const initialAngle = (i / numLines) * 2 * Math.PI;
+        // Pivot point on the circle (in local coordinates).
+        const x1 = circleRadius + Math.cos(initialAngle) * circleRadius;
+        const y1 = circleRadius + Math.sin(initialAngle) * circleRadius;
+        
+        const line = document.createElement('div');
+        line.classList.add('line');
+        
+        // Position so that the pivot (bottom of the line) is on the circle.
+        line.style.left = `${x1 - lineWidth / 2}px`;
+        line.style.top = `${y1 - lineLength}px`;
+        line.style.transform = `rotate(${initialAngle}rad)`;
+        
+        circle.appendChild(line);
+      }
+    }
+
+    // Animation: update rotating lines and connecting lines on the full-screen canvas.
+    function animate() {
+      const lines = document.querySelectorAll('.line');
+      const now = performance.now();
+      
+      // Get the main circle's bounding rectangle for coordinate conversion.
+      const circleRect = circle.getBoundingClientRect();
+      endpoints = [];
+      
+      lines.forEach((line, index) => {
+        // Calculate the base angle (with reversed rotation).
+        const baseAngle = (index / numLines) * 2 * Math.PI - now * baseSpeed;
+        // Relative rotation for the free endpoint.
+        const relativeAngle = now * innerSpeed;
+        // Combined rotation angle.
+        const totalAngle = baseAngle + relativeAngle;
+        
+        // Compute the pivot position (on the main circle) in container local coordinates.
+        const x1 = circleRadius + Math.cos(baseAngle) * circleRadius;
+        const y1 = circleRadius + Math.sin(baseAngle) * circleRadius;
+        
+        // Update the line's position so the pivot stays on the circle.
+        line.style.left = `${x1 - lineWidth / 2}px`;
+        line.style.top = `${y1 - lineLength}px`;
+        line.style.transform = `rotate(${baseAngle}rad) rotate(${relativeAngle}rad)`;
+        
+        // Compute the far (free) endpoint in container coordinates.
+        const farXLocal = x1 + lineLength * Math.sin(totalAngle);
+        const farYLocal = y1 - lineLength * Math.cos(totalAngle);
+        // Convert to viewport coordinates by adding the container's offset.
+        const farX = circleRect.left + farXLocal;
+        const farY = circleRect.top + farYLocal;
+        endpoints.push({ x: farX, y: farY });
+      });
+      
+      // Draw connecting lines.
+      drawConnections();
+      requestAnimationFrame(animate);
+    }
+
+    // Draw lines between rotating endpoints and from each endpoint to the two stationary circles.
+    function drawConnections() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.lineWidth = 2;
+      
+      // Draw lines between every pair of rotating endpoints.
+      for (let i = 0; i < endpoints.length; i++) {
+        for (let j = i + 1; j < endpoints.length; j++) {
+          const p1 = endpoints[i];
+          const p2 = endpoints[j];
+          const grad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+          grad.addColorStop(0, 'rgba(255,255,255,0.4)');
+          grad.addColorStop(1, 'rgba(255,255,255,0.8)');
+          ctx.strokeStyle = grad;
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+        }
+      }
+      
+      // Draw lines from each rotating endpoint to each stationary circle.
+      const leftCircleRect = document.getElementById('left-circle').getBoundingClientRect();
+      const rightCircleRect = document.getElementById('right-circle').getBoundingClientRect();
+      // Compute centers.
+      const leftCenter = { x: leftCircleRect.left + leftCircleRect.width / 2, y: leftCircleRect.top + leftCircleRect.height / 2 };
+      const rightCenter = { x: rightCircleRect.left + rightCircleRect.width / 2, y: rightCircleRect.top + rightCircleRect.height / 2 };
+      
+      endpoints.forEach(p => {
+        // Left circle connection.
+        let gradLeft = ctx.createLinearGradient(p.x, p.y, leftCenter.x, leftCenter.y);
+        gradLeft.addColorStop(0, 'rgba(255,255,255,0.4)');
+        gradLeft.addColorStop(1, 'rgba(255,255,255,0.8)');
+        ctx.strokeStyle = gradLeft;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(leftCenter.x, leftCenter.y);
+        ctx.stroke();
+        
+        // Right circle connection.
+        let gradRight = ctx.createLinearGradient(p.x, p.y, rightCenter.x, rightCenter.y);
+        gradRight.addColorStop(0, 'rgba(255,255,255,0.4)');
+        gradRight.addColorStop(1, 'rgba(255,255,255,0.8)');
+        ctx.strokeStyle = gradRight;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(rightCenter.x, rightCenter.y);
+        ctx.stroke();
+      });
+    }
+    
+    createLines();
+    animate();
+    
+    // Update the canvas size on window resize.
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+    
+    /* ===== Particle Animation for Tiny, Transparent White Circles ===== */
+    // Create a new canvas dynamically for the particle animation.
+    const particleCanvas = document.createElement('canvas');
+    particleCanvas.style.position = 'fixed';
+    particleCanvas.style.top = '0';
+    particleCanvas.style.left = '0';
+    particleCanvas.style.width = '100vw';
+    particleCanvas.style.height = '100vh';
+    particleCanvas.style.pointerEvents = 'none';
+    particleCanvas.style.zIndex = '1'; // Layered between the rotating lines (z-index 0) and UI elements
+    document.body.appendChild(particleCanvas);
+    
+    const pctx = particleCanvas.getContext('2d');
+    function resizeParticleCanvas() {
+      particleCanvas.width = window.innerWidth;
+      particleCanvas.height = window.innerHeight;
+    }
+    resizeParticleCanvas();
+    window.addEventListener('resize', resizeParticleCanvas);
+    
+    const numParticles = 50;
+    const particles = [];
+    
+    function initParticles() {
+      for (let i = 0; i < numParticles; i++) {
+        particles.push({
+          x: Math.random() * particleCanvas.width,
+          y: Math.random() * particleCanvas.height,
+          radius: Math.random() * 2 + 1, // Radius between 1 and 3
+          dx: (Math.random() - 0.5) * 0.2,
+          dy: (Math.random() - 0.5) * 0.2
+        });
+      }
+    }
+    initParticles();
+    
+    function animateParticles() {
+      pctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+      
+      particles.forEach(particle => {
+        particle.x += particle.dx;
+        particle.y += particle.dy;
+        
+        // Wrap around edges.
+        if (particle.x < 0) particle.x = particleCanvas.width;
+        if (particle.x > particleCanvas.width) particle.x = 0;
+        if (particle.y < 0) particle.y = particleCanvas.height;
+        if (particle.y > particleCanvas.height) particle.y = 0;
+        
+        pctx.beginPath();
+        pctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        pctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+        pctx.fill();
+      });
+      
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+  </script>
+</body>
+</html>
