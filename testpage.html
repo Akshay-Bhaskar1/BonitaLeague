@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Teams | Bonita Basketball League</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Bonita Basketball League</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
   <style>
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       font-family: 'Poppins', sans-serif;
@@ -14,261 +14,280 @@
       color: white;
       overflow-x: hidden;
     }
-   
-    /* Navigation Bar (similar to previous pages) */
-    .nav-bar {
-      display: flex;
-      justify-content: space-around;
-      padding: 20px;
-      background-color: rgba(0, 0, 0, 0.8);
+    /* Navigation Bar */
+    nav {
       position: fixed;
       top: 0;
       left: 0;
-      right: 0;
-      z-index: 100;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
-    .nav-bar a {
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
+    nav ul {
+      list-style: none;
+      margin: 0;
       padding: 10px 20px;
-      transition: 0.3s;
-      border-radius: 10px;
+      display: flex;
+      align-items: center;
     }
-    .nav-bar a:hover {
-      background-color: #FF6600;
-    }
-    .dropdown {
+    nav ul li {
+      margin: 0 15px;
       position: relative;
-      display: inline-block;
     }
-    .dropdown-content {
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+      font-size: 1em;
+      padding: 8px 12px;
+      transition: background 0.3s;
+    }
+    nav ul li a:hover {
+      background: #FF6600;
+      border-radius: 4px;
+    }
+    /* Dropdown Menu Style */
+    .dropdown > a:after {
+      content: ' ▼';
+      font-size: 0.8em;
+    }
+    .dropdown ul {
+      /* Always use flex row for the inner dropdown menu */
       display: none;
       position: absolute;
-      background-color: rgba(0, 0, 0, 0.8);
-      min-width: 160px;
-      z-index: 101;
-      border-radius: 10px;
+      top: 100%;
+      left: 0;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 10px;
+      list-style: none;
+      min-width: 150px;
+      border-radius: 4px;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 10px;
     }
-    .dropdown:hover .dropdown-content {
-      display: block;
+    .dropdown ul li {
+      margin: 0;
     }
-    .dropdown-content a {
-      color: white;
-      padding: 10px 20px;
-      text-decoration: none;
-      display: block;
-      font-weight: 600;
-      transition: 0.3s;
-      border-radius: 10px;
+    .dropdown ul li a {
+      display: inline-block;
+      padding: 8px 15px;
+      white-space: nowrap;
     }
-    .dropdown-content a:hover {
-      background-color: #FF6600;
+    .dropdown:hover ul {
+      display: flex;
     }
-   
-    /* Main Content */
-    .container {
-      padding: 100px 20px 40px;
-      margin-top: 80px;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
+    /* Canvas covers entire viewport and is behind everything */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
     }
-    .container h1 {
+    /* Content Wrapper */
+    .wrapper {
+      position: relative;
+      z-index: 2;
       text-align: center;
-      color: #FF0000;
-      font-size: 3.5em; /* Larger headline */
+      padding: 120px 20px 150px; /* extra top padding to clear nav, bottom for button space */
+      max-width: 90%;
+      margin: auto;
+      background: transparent;
+    }
+    h1 {
+      font-size: 4.5em;
+      letter-spacing: 3px;
+      font-weight: 600;
       margin-bottom: 20px;
     }
-   
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, auto);
-      gap: 30px;
-      padding: 20px;
+    .headline {
+      font-size: 2.2em;
+      line-height: 1.8;
+      font-weight: 300;
+      max-width: 80%;
+      margin: 20px auto;
     }
-   
-    .team-card {
-      background-color: #000;
-      border: 2px solid #FF0000;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
-      transition: transform 0.3s;
+    /* Modern styled Instagram button */
+    .cta-button {
+      display: inline-block;
+      background-color: #FF6600;
+      color: white;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      text-decoration: none;
+      border: none;
+      border-radius: 50px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      margin-top: 40px;
     }
-    .team-card:hover {
-      transform: scale(1.02);
+    .cta-button:hover {
+      background-color: #e55b00;
+      transform: translateY(-3px);
     }
-    .team-card h2 {
-      font-size: 1.8em;
-      margin-top: 0;
-      margin-bottom: 10px;
-      color: #FF0000;
+    /* NEW: JOIN THE MADNESS! Button Styles */
+    .join-button {
+      background-color: rgba(255,255,255,0.9) !important;
+      color: black !important;
+      box-shadow: 0 0 25px rgba(255,255,255,0.8) !important;
     }
-    .team-card ul {
-      list-style: none;
-      padding-left: 0;
-      margin: 0;
-      font-size: 1.1em;
+    .join-button:hover {
+      background-color: rgba(255,255,255,1) !important;
     }
-    .team-card ul li {
-      margin-bottom: 5px;
-      cursor: pointer;
-    }
-   
-    /* Responsive adjustments for text inside cards */
-    @media (max-width: 600px) {
-      .team-card h2 {
+    /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 3em;
+      }
+      .headline {
         font-size: 1.5em;
       }
-      .team-card ul {
-        font-size: 1em;
+      .wrapper {
+        padding: 100px 10px; /* Reduce padding for small screens */
+        max-width: 95%; /* Slightly wider on mobile */
       }
-    }
-    
-    /* Responsive grid adjustments: medium screens */
-    @media (max-width: 768px) {
-      .team-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-        padding: 10px;
+      /* Force the top-level nav items into a row on mobile,
+         but let them adjust spacing as needed */
+      nav ul {
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
       }
-      .container {
-        padding: 80px 20px 40px;
+      nav ul li {
+        margin: 0 10px;
       }
-      .container h1 {
-        font-size: 2.8em;
-      }
-    }
-    
-    /* Responsive grid adjustments: very small screens */
-    @media (max-width: 480px) {
-      .team-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-      .container h1 {
-        font-size: 2.2em;
+      /* Re-ensure dropdown ul remains horizontal */
+      .dropdown ul {
+        flex-direction: row !important;
+        flex-wrap: nowrap;
       }
     }
   </style>
 </head>
 <body>
   <!-- Navigation Bar -->
-  <div class="nav-bar">
-    <a href="index.html">Home</a>
-    <a href="provosts.html">Provosts</a>
-    <a href="league_news.html">League News</a>
-    <div class="dropdown">
-      <a href="#">League Info</a>
-      <div class="dropdown-content">
-        <a href="player_info.html">Player Info</a>
-        <a href="teams.html">Teams</a>
-        <a href="standings.html">Standings</a>
-        <a href="rules.html">Rules</a>
-      </div>
-    </div>
+  <nav>
+    <ul>
+      <li><a href="provosts.html">The Provosts</a></li>
+      <li class="dropdown">
+        <a href="#">League Information</a>
+        <ul>
+          <li><a href="player_info.html">Player Info</a></li>
+          <li><a href="teams.html">Teams</a></li>
+          <li><a href="standings.html">Standings</a></li>
+        </ul>
+      </li>
+      <li><a href="league_news.html">League News</a></li>
+      <li><a href="rules.html">Rules</a></li>
+    </ul>
+  </nav>
+  
+  <!-- Canvas Background with Animated Particles and Connections -->
+  <canvas id="backgroundCanvas"></canvas>
+  
+  <!-- Content Wrapper -->
+  <div class="wrapper">
+    <h1>The Bonita Basketball League</h1>
+    <p class="headline">
+      6 TEAMS, 24 PLAYERS, ONLY ONE  
+      <a href="password.html" style="color: #ffffff; text-decoration: none;">WINNER</a>, AND ONE VERY VERY UNLUCKY LOSER.
+    </p>
+    <p class="headline">
+      Bonita Park's greatest stars compete to see just who is the best of them all.
+    </p>
+    <p class="headline">
+      The top gets fame, glory, and free El Queso.
+    </p>
+    <p class="headline">
+      The bottom must go to Macy's and buy the biggest bra they can find. Straight faced. No shame. On video. For 
+      <a href="hall_of_fame.html" style="color: #ffffff; text-decoration: none;">all to see.</a>
+    </p>
+    <a class="cta-button" href="https://www.instagram.com/bonitabasketballleague/" target="_blank">Follow our Instagram!</a>
+    
+    <!-- NEW BUTTON: JOIN THE MADNESS! -->
+    <a class="cta-button join-button" href="https://forms.gle/EGnXAEQzWhseop1H7" style="margin-top: 20px;">JOIN THE MADNESS!</a>
   </div>
- 
-  <!-- Main Content -->
-  <div class="container">
-    <h1 style="text-align:center; color:#FF0000;">Teams</h1>
-    <div class="team-grid">
-      <!-- Golden State Gooners -->
-      <div class="team-card">
-        <h2>Golden State Gooners</h2>
-        <ul>
-          <li>Ashwin Thomas</li>
-          <li>Omar Ismaiel</li>
-          <li>Abir Bakshi</li>
-          <li id="harris" onclick="window.location.href='secret_game.html'">Harris Choudry</li>
-        </ul>
-      </div>
-      <!-- Soham's Skibs -->
-      <div class="team-card">
-        <h2>Soham's Skibs</h2>
-        <ul>
-          <li id="jay">Jay Goyal</li>
-          <li>Ameya Chaturvedi</li>
-          <li>Khaja Ayaan</li>
-          <li>Soham Mule</li>
-        </ul>
-      </div>
-      <!-- Swiss Cheesers -->
-      <div class="team-card">
-        <h2>Swiss Cheesers</h2>
-        <ul>
-          <li>Mithran Regupathy</li>
-          <li>Shourya Sharma</li>
-          <li>Eshan Mahuli</li>
-          <li>Raghav Gupta</li>
-        </ul>
-      </div>
-      <!-- The Jackson 5 -->
-      <div class="team-card">
-        <h2>The Jackson 5</h2>
-        <ul>
-          <li id="shayan">Shayan Parikh</li>
-          <li>Shuopu Wang</li>
-          <li>Dev Arora</li>
-          <li>Shravan Narayanan</li>
-        </ul>
-      </div>
-      <!-- Green Gooner Goblins -->
-      <div class="team-card">
-        <h2>Green Gooner Goblins</h2>
-        <ul>
-          <li>Omkar Vasa</li>
-          <li>Yash Dharankar</li>
-          <li>Pratt Penumarthy</li>
-          <li>Ebad Quraishi</li>
-        </ul>
-      </div>
-      <!-- Ashwinners -->
-      <div class="team-card">
-        <h2>Ashwinners</h2>
-        <ul>
-          <li>Wentao Xie</li>
-          <li>Abdirahman Omar</li>
-          <li>Parasuram Muralikumar</li>
-          <li id="akshay">Akshay Bhaskar</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
+  
   <script>
-    // Track the state for glitch effect on specific names
-    let clickedNames = {
-      akshay: false,
-      jay: false,
-      shayan: false
-    };
-
-    function checkGlitch() {
-      if (clickedNames.akshay && clickedNames.jay && clickedNames.shayan) {
-        window.location.href = "provost_info.html";
+    const canvas = document.getElementById('backgroundCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    
+    let particles = [];
+    const numParticles = 200;
+    
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.radius = Math.random() * 5 + 1;
+        this.speedX = (Math.random() - 0.5) * 1.5;
+        this.speedY = (Math.random() - 0.5) * 1.5;
+        this.opacity = Math.random() * 0.5 + 0.3;
+      }
+      move() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,102,0, ${this.opacity})`;
+        ctx.fill();
       }
     }
-
-    document.getElementById('akshay').addEventListener('click', function() {
-      this.style.color = "red"; // Glitch effect: change text to red
-      clickedNames.akshay = true;
-      checkGlitch();
-    });
-
-    document.getElementById('jay').addEventListener('click', function() {
-      this.style.color = "red";
-      clickedNames.jay = true;
-      checkGlitch();
-    });
-
-    document.getElementById('shayan').addEventListener('click', function() {
-      this.style.color = "red";
-      clickedNames.shayan = true;
-      checkGlitch();
-    });
+    
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < numParticles; i++) {
+        particles.push(new Particle());
+      }
+    }
+    
+    function drawConnections() {
+      const connectionThreshold = 120;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < connectionThreshold) {
+            const lineOpacity = 1 - distance / connectionThreshold;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(200,200,200, ${lineOpacity.toFixed(2)})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+    
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(particle => {
+        particle.move();
+        particle.draw();
+      });
+      drawConnections();
+      requestAnimationFrame(animateParticles);
+    }
+    
+    initParticles();
+    animateParticles();
   </script>
 </body>
 </html>
