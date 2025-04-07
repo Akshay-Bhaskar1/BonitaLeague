@@ -70,13 +70,14 @@
     .container {
       padding: 100px 20px 40px;
       margin-top: 80px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
     }
-   
-    /* Teams title larger than boxes' font size */
     .container h1 {
       text-align: center;
       color: #FF0000;
-      font-size: 3.5em; /* Increased from 2.8em */
+      font-size: 3.5em; /* Larger headline */
       margin-bottom: 20px;
     }
    
@@ -96,37 +97,59 @@
       box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
       transition: transform 0.3s;
     }
-   
     .team-card:hover {
       transform: scale(1.02);
     }
-   
     .team-card h2 {
       font-size: 1.8em;
       margin-top: 0;
       margin-bottom: 10px;
       color: #FF0000;
     }
-   
     .team-card ul {
       list-style: none;
       padding-left: 0;
       margin: 0;
       font-size: 1.1em;
     }
-   
     .team-card ul li {
       margin-bottom: 5px;
       cursor: pointer;
     }
    
-    /* Responsive adjustments */
+    /* Responsive adjustments for text inside cards */
     @media (max-width: 600px) {
       .team-card h2 {
         font-size: 1.5em;
       }
       .team-card ul {
         font-size: 1em;
+      }
+    }
+    
+    /* Responsive grid adjustments: medium screens */
+    @media (max-width: 768px) {
+      .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        padding: 10px;
+      }
+      .container {
+        padding: 80px 20px 40px;
+      }
+      .container h1 {
+        font-size: 2.8em;
+      }
+    }
+    
+    /* Responsive grid adjustments: very small screens */
+    @media (max-width: 480px) {
+      .team-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .container h1 {
+        font-size: 2.2em;
       }
     }
   </style>

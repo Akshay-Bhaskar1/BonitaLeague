@@ -133,6 +133,27 @@
     .join-button:hover {
       background-color: rgba(255,255,255,1) !important;
     }
+    /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 3em;
+      }
+      .headline {
+        font-size: 1.5em;
+      }
+      .wrapper {
+        padding: 100px 10px; /* Reduce padding for small screens */
+        max-width: 95%; /* Slightly wider on mobile */
+      }
+      nav ul {
+        flex-direction: column;
+        align-items: flex-start; /* Align links to the left */
+        padding: 10px;
+      }
+      nav ul li {
+        margin: 10px 0; /* Add spacing between menu items */
+      }
+    }
   </style>
 </head>
 <body>
@@ -159,10 +180,20 @@
   <!-- Content Wrapper -->
   <div class="wrapper">
     <h1>The Bonita Basketball League</h1>
-    <p class="headline">6 TEAMS, 24 PLAYERS, ONLY ONE  <a href="password.html" style="color: #ffffff; text-decoration: none;">WINNER</a>, AND ONE VERY VERY UNLUCKY LOSER.</p>
-    <p class="headline">Bonita Park's greatest stars compete to see just who is the best of them all.</p>
-    <p class="headline">The top gets fame, glory, and free El Queso.</p>
-    <p class="headline">The bottom must go to Macy's and buy the biggest bra they can find. Straight faced. No shame. On video. For <a href="hall_of_fame.html" style="color: #ffffff; text-decoration: none;">all to see.</a></p>
+    <p class="headline">
+      6 TEAMS, 24 PLAYERS, ONLY ONE  
+      <a href="password.html" style="color: #ffffff; text-decoration: none;">WINNER</a>, AND ONE VERY VERY UNLUCKY LOSER.
+    </p>
+    <p class="headline">
+      Bonita Park's greatest stars compete to see just who is the best of them all.
+    </p>
+    <p class="headline">
+      The top gets fame, glory, and free El Queso.
+    </p>
+    <p class="headline">
+      The bottom must go to Macy's and buy the biggest bra they can find. Straight faced. No shame. On video. For 
+      <a href="hall_of_fame.html" style="color: #ffffff; text-decoration: none;">all to see.</a>
+    </p>
     <a class="cta-button" href="https://www.instagram.com/bonitabasketballleague/" target="_blank">Follow our Instagram!</a>
     
     <!-- NEW BUTTON: JOIN THE MADNESS! -->
@@ -218,11 +249,11 @@
       const connectionThreshold = 120;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
-          let dx = particles[i].x - particles[j].x;
-          let dy = particles[i].y - particles[j].y;
-          let distance = Math.sqrt(dx * dx + dy * dy);
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
           if (distance < connectionThreshold) {
-            let lineOpacity = 1 - distance / connectionThreshold;
+            const lineOpacity = 1 - distance / connectionThreshold;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
