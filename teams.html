@@ -249,26 +249,4 @@
     function checkGlitch() {
       if (clickedNames.akshay && clickedNames.jay && clickedNames.shayan) {
         window.location.href = "provost_info.html";
-      }
-    }
-
-    document.getElementById('akshay').addEventListener('click', function() {
-      this.style.color = "red"; // Glitch effect: change text to red
-      clickedNames.akshay = true;
-      checkGlitch();
-    });
-
-    document.getElementById('jay').addEventListener('click', function() {
-      this.style.color = "red";
-      clickedNames.jay = true;
-      checkGlitch();
-    });
-
-    document.getElementById('shayan').addEventListener('click', function() {
-      this.style.color = "red";
-      clickedNames.shayan = true;
-      checkGlitch();
-    });
-  </script>
-</body>
-</html>
+  

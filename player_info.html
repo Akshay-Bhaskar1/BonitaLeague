@@ -200,6 +200,23 @@
       height: 800px;
       border: none;
     }
+    
+    /* Media Query: For small screens, stack .player-info vertically.
+       Increasing the breakpoint to 768px to better cover more phone sizes */
+    @media (max-width: 768px) {
+      .player-info {
+        flex-direction: column;
+      }
+      .player-info img {
+        width: 80%;
+        height: auto;
+        max-width: 300px;
+      }
+      .player-info .text {
+        max-width: 90%;
+        font-size: 1em;
+      }
+    }
   </style>
 </head>
 <body>

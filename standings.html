@@ -258,35 +258,4 @@
       glowCanvas.width = window.innerWidth;
       glowCanvas.height = window.innerHeight;
     }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    let time = 0;
-
-    function animate() {
-      ctx.clearRect(0, 0, glowCanvas.width, glowCanvas.height);
-      ctx.lineWidth = 10;
-      ctx.shadowColor = 'rgba(255, 0, 0, 1)';
-      ctx.shadowBlur = 25;
-      ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
-
-      const path = new Path2D();
-      const offset = 80; // Avoid navigation bar
-      const w = glowCanvas.width;
-      const h = glowCanvas.height;
-      const t = time * 0.002;
-
-      path.moveTo(offset + Math.sin(t) * 20, offset);
-      path.lineTo(w - offset - Math.cos(t) * 20, offset);
-      path.lineTo(w - offset, h - offset - Math.sin(t) * 20);
-      path.lineTo(offset + Math.cos(t) * 20, h - offset);
-      path.closePath();
-
-      ctx.stroke(path);
-      time++;
-      requestAnimationFrame(animate);
-    }
-    animate();
-  </script>
-</body>
-</html>
+    window.addEventListener('resize', resizeCanva
