@@ -2,280 +2,180 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Retro Command Terminal</title>
+  <title>Follow the Dots for a Prize!</title>
+  <link href="https://fonts.googleapis.com/css?family=Bebas+Neue" rel="stylesheet">
   <style>
-    /* Base styling – black background, retro green text, and monospace font */
     body {
       background-color: black;
-      color: #33ff33;
-      font-family: 'Courier New', monospace;
       margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Bebas Neue', sans-serif;
+      cursor: none; /* Hides the default cursor */
+    }
+    #header {
+      text-align: center;
       padding: 20px;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
+      font-size: 2em;
+      color: orange;
+      transition: color 1s linear; /* Smooth transition */
     }
-    /* Terminal output area */
-    #terminal {
-      flex-grow: 1;
-      overflow-y: auto;
-      white-space: pre-wrap;
+    #dot {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: orange;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 2;
+      transition: background-color 1s linear; /* Smooth color transition */
     }
-    /* Input line styling */
-    .input-line {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
+    #counter {
+      position: fixed;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      font-size: 24px;
+      color: orange;
+      z-index: 2;
+      transition: color 1s linear;
     }
-    /* The prompt: shows the file path and a blinking "%" cursor */
-    .prompt {
-      margin-right: 5px;
+    #stopwatch {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+      color: orange;
+      z-index: 2;
     }
-    .cursor {
-      animation: blink 1s step-start infinite;
+    .trail {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity 0.5s linear;
     }
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-    /* Rainbow animation for the full-screen HARRIS effect */
-    @keyframes rainbow {
-      0%   { color: red; }
-      16%  { color: orange; }
-      33%  { color: yellow; }
-      50%  { color: green; }
-      66%  { color: blue; }
-      83%  { color: indigo; }
+    @keyframes rainbowFlash {
+      0% { color: red; }
+      16% { color: orange; }
+      32% { color: yellow; }
+      48% { color: green; }
+      64% { color: blue; }
+      80% { color: indigo; }
       100% { color: violet; }
     }
-    /* Glitch animation for the digit "4" in the delete confirmation message */
-    .glitch {
-      animation: glitch 1s infinite;
-    }
-    @keyframes glitch {
-      0%   { opacity: 1; transform: translate(0, 0); }
-      25%  { opacity: 0.5; transform: translate(2px, -2px); }
-      50%  { opacity: 1; transform: translate(-2px, 2px); }
-      75%  { opacity: 0.5; transform: translate(2px, -2px); }
-      100% { opacity: 1; transform: translate(0, 0); }
-    }
-    /* Delete effect – shutdown style with a gradual red background */
-    #deleteEffect {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: black;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 4em;
-      animation: shutdownEffect 3s forwards;
-    }
-    @keyframes shutdownEffect {
-      0% { background: black; }
-      50% { background: #550000; }
-      100% { background: #aa0000; }
-    }
-    /* Flicker effect for the [REDACTED] text in a darker red shade */
-    .flicker {
-      color: darkred;
-      animation: flickerEffect 2s infinite;
-      text-shadow: 0 0 5px rgba(139,0,0,0.8), 0 0 10px rgba(139,0,0,0.8);
-    }
-    @keyframes flickerEffect {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-        opacity: 1;
-      }
-      20%, 24%, 55% {
-        opacity: 0;
-      }
+    .rainbow {
+      animation: rainbowFlash 1s infinite alternate;
     }
   </style>
 </head>
 <body>
-  <!-- Terminal output area -->
-  <div id="terminal"></div>
-  
-  <!-- Input line: file path prompt and text input -->
-  <div class="input-line">
-    <span class="prompt">
-      /SecretInfo/Terminal/Provost8-1-18-18-9-19<span class="cursor">%</span>
-    </span>
-    <input type="text" id="commandInput" autocomplete="off" autofocus
-           style="background-color: black; border: none; color: inherit; flex-grow: 1; outline: none; font-family: 'Courier New', monospace; font-size: 1em;">
-  </div>
+  <div id="header">follow the dots for a prize!</div>
+  <div id="dot"></div>
+  <div id="counter">0</div>
+  <div id="stopwatch">0s</div>
 
   <script>
-    const terminal = document.getElementById("terminal");
-    const commandInput = document.getElementById("commandInput");
-    
-    // Flags to track whether we are waiting for a confirmation response
-    let awaitingHackConfirmation = false;
-    let awaitingDeleteConfirmation = false;
-    
-    // Append a plain text line to the terminal output
-    function printLine(text) {
-      const line = document.createElement("div");
-      line.textContent = text;
-      terminal.appendChild(line);
-      terminal.scrollTop = terminal.scrollHeight;
-    }
-    
-    // Append HTML content (useful for inline effects)
-    function printHTML(html) {
-      const line = document.createElement("div");
-      line.innerHTML = html;
-      terminal.appendChild(line);
-      terminal.scrollTop = terminal.scrollHeight;
-    }
-    
-    // Process a command issued by the user
-    function runCommand(command) {
-      command = command.trim();
-      if (command === "") return;
-      
-      // Echo the command with the file path prompt
-      printLine("/SecretInfo/Terminal/Provost8-1-18-18-9-19% " + command);
-      
-      // "Harris" command: trigger full-screen rainbow effect
-      if (command === "Harris") {
-        activateHarris();
-        return;
-      }
-      
-      // Tokenize the command
-      let tokens = command.split(" ");
-      if (tokens[0] === "provost") {
-        // provost add game [TEAM THAT WON] [SCORE]
-        if (tokens[1] === "add" && tokens[2] === "game") {
-          if (tokens.length < 5) {
-            printLine("Error, insufficient parameters for provost add game");
-          } else {
-            let score = tokens[tokens.length - 1];
-            let team = tokens.slice(3, tokens.length - 1).join(" ");
-            printLine(team + " wins " + score + ", game added to database");
-          }
-          return;
-        }
-        // provost remove game
-        else if (tokens[1] === "remove" && tokens[2] === "game") {
-          printLine("Last game removed from database");
-          return;
-        }
-        // provost new command [TEXT]
-        else if (tokens[1] === "new" && tokens[2] === "command") {
-          if (tokens.length < 4) {
-            printLine("Error, insufficient parameters for provost new command");
-          } else {
-            printLine("Pushed to server, official command will be executed and runtime will be allocated");
-          }
-          return;
-        }
-        // provost hack Akshay
-        else if (tokens[1] === "hack" && tokens[2] === "Akshay") {
-          awaitingHackConfirmation = true;
-          printLine("Do you want to access the beta-testing version of the website Y/N");
-          return;
-        }
-        // provost delete .
-        else if (tokens[1] === "delete" && tokens[2] === ".") {
-          awaitingDeleteConfirmation = true;
-          // Include the glitchy "4" using HTML (printHTML) so that the effect is retained
-          printHTML("DO YOU WANT TO REMOVE ALL BBL SECRETS? ALL THE MALIGNANT INFORMATION ABOUT THE <span class='glitch'>4</span> PROVOSTS WILL BE HIDDEN FOREVER. Y/N");
-          return;
-        } else {
-          printLine("Error, " + command + " is not a valid command.");
-          return;
-        }
-      } else {
-        printLine("Error, " + command + " is not a valid command.");
-        return;
+    let counter = 0;
+    let gameOver = false;
+    const dot = document.getElementById('dot');
+    const counterDisplay = document.getElementById('counter');
+    const header = document.getElementById('header');
+    const stopwatchDisplay = document.getElementById('stopwatch');
+
+    // Array of rainbow colors
+    const colors = ["orange", "yellow", "green", "blue", "indigo", "violet"];
+    let currentColorIndex = 0;
+
+    // Function to change colors smoothly
+    function updateColor() {
+      if (counter > 0 && counter % 10 === 0) {
+        currentColorIndex = (currentColorIndex + 1) % colors.length;
+        const newColor = colors[currentColorIndex];
+
+        // Apply color changes with transitions
+        header.style.color = newColor;
+        dot.style.backgroundColor = newColor;
+        counterDisplay.style.color = newColor;
       }
     }
-    
-    // Confirmation handler for "provost hack Akshay"
-    function handleHackConfirmation(response) {
-      if (response.toUpperCase() === "Y") {
-        printLine("Beta mode activated, tread carefully,");
-        terminal.style.color = "red";
-        return true;
-      } else if (response.toUpperCase() === "N") {
-        return true;
-      } else {
-        printLine("Invalid response. Please type Y or N.");
-        return false;
+
+    // Function to randomly reposition the dot
+    function moveDotRandomly() {
+      const maxWidth = window.innerWidth - dot.offsetWidth;
+      const maxHeight = window.innerHeight - dot.offsetHeight;
+      const randomX = Math.random() * maxWidth;
+      const randomY = Math.random() * maxHeight;
+      dot.style.left = randomX + "px";
+      dot.style.top = randomY + "px";
+    }
+
+    // Initialize the dot's position
+    moveDotRandomly();
+
+    // Handle dot hover event
+    dot.addEventListener('mouseover', function() {
+      if (gameOver) return; // Stop interaction after winning
+
+      counter++;
+      counterDisplay.textContent = counter;
+      updateColor();
+      moveDotRandomly();
+
+      if (counter === 100) {
+        gameOver = true;
+        header.textContent = "congratulations! prize recieved: Harris";
+        header.classList.add("rainbow"); // Flashing rainbow effect
+        setTimeout(() => alert("congratulations! prize recieved: Harris"), 200);
       }
-    }
-    
-    // Confirmation handler for "provost delete ."
-    function handleDeleteConfirmation(response) {
-      if (response.toUpperCase() === "Y") {
-        activateDeleteEffect();
-        return true;
-      } else if (response.toUpperCase() === "N") {
-        terminal.style.color = "red";
-        return true;
-      } else {
-        printLine("Invalid response. Please type Y or N.");
-        return false;
+    });
+
+    // Adjust dot position when window resizes
+    window.addEventListener('resize', moveDotRandomly);
+
+    // Create a cursor trail that matches the dot's color
+    document.addEventListener('mousemove', function(e) {
+      const trailDot = document.createElement('div');
+      trailDot.classList.add('trail');
+      const currentDotColor = window.getComputedStyle(dot).backgroundColor;
+      trailDot.style.backgroundColor = currentDotColor;
+      trailDot.style.left = (e.pageX - 4) + 'px';
+      trailDot.style.top = (e.pageY - 4) + 'px';
+      document.body.appendChild(trailDot);
+
+      // Fade out the trail
+      requestAnimationFrame(() => {
+        trailDot.style.opacity = '0';
+      });
+
+      // Remove after fade-out
+      setTimeout(() => {
+        trailDot.remove();
+      }, 500);
+    });
+
+    // Stopwatch functionality
+    let secondsElapsed = 0;
+    setInterval(() => {
+      if (!gameOver) {
+        secondsElapsed++;
+        stopwatchDisplay.textContent = secondsElapsed + "s";
       }
-    }
-    
-    // Activate the "Harris" command effect by hiding terminal elements and showing full-screen rainbow text
-    function activateHarris() {
-      document.getElementById("terminal").style.display = "none";
-      document.querySelector(".input-line").style.display = "none";
-      
-      const harrisDiv = document.createElement("div");
-      harrisDiv.textContent = "HARRIS";
-      harrisDiv.style.position = "fixed";
-      harrisDiv.style.top = "0";
-      harrisDiv.style.left = "0";
-      harrisDiv.style.width = "100%";
-      harrisDiv.style.height = "100%";
-      harrisDiv.style.display = "flex";
-      harrisDiv.style.alignItems = "center";
-      harrisDiv.style.justifyContent = "center";
-      harrisDiv.style.fontSize = "5em";
-      harrisDiv.style.fontWeight = "bold";
-      harrisDiv.style.animation = "rainbow 2s infinite";
-      document.body.appendChild(harrisDiv);
-    }
-    
-    // Activate the shutdown-style delete effect: disable further input and show a flickering [REDACTED] message
-    function activateDeleteEffect() {
-      const inputLine = document.querySelector(".input-line");
-      if (inputLine) inputLine.style.display = "none";
-      terminal.innerHTML = "";
-      
-      const deleteDiv = document.createElement("div");
-      deleteDiv.id = "deleteEffect";
-      
-      const textSpan = document.createElement("span");
-      textSpan.className = "flicker";
-      textSpan.textContent = "[REDACTED]";
-      
-      deleteDiv.appendChild(textSpan);
-      document.body.appendChild(deleteDiv);
-    }
-    
-    // Main event listener: on Enter, process either a confirmation response or a new command
-    commandInput.addEventListener("keydown", function(event) {
-      if (event.key === "Enter") {
-        const userCommand = commandInput.value;
-        if (awaitingHackConfirmation) {
-          if (handleHackConfirmation(userCommand)) {
-            awaitingHackConfirmation = false;
-          }
-        } else if (awaitingDeleteConfirmation) {
-          if (handleDeleteConfirmation(userCommand)) {
-            awaitingDeleteConfirmation = false;
-          }
-        } else {
-          runCommand(userCommand);
-        }
-        commandInput.value = "";
+    }, 1000);
+  </script>
+  
+  <!-- Secret click detection: Redirect to terminal.html if >10 clicks within 3 seconds -->
+  <script>
+    let clickTimestamps = [];
+    document.addEventListener("click", function() {
+      const now = Date.now();
+      // Remove clicks older than 3 seconds
+      clickTimestamps = clickTimestamps.filter(timestamp => now - timestamp < 3000);
+      clickTimestamps.push(now);
+      if (clickTimestamps.length > 10) {
+        window.location.href = "terminal.html";
       }
     });
   </script>
