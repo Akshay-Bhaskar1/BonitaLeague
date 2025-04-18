@@ -2,15 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Added viewport meta for proper scaling on mobile and iPhones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Retro Command Terminal</title>
   <style>
+    /* Ensure box-sizing is border-box for proper sizing of all elements */
+    * {
+      box-sizing: border-box;
+    }
+    
     /* Base styling – black background, retro green text, and monospace font */
     body {
       background-color: black;
       color: #33ff33;
       font-family: 'Courier New', monospace;
       margin: 0;
-      padding: 20px;
+      /* Use safe area insets for iPhones with notches */
+      padding: env(safe-area-inset-top, 20px) env(safe-area-inset-right, 20px) env(safe-area-inset-bottom, 20px) env(safe-area-inset-left, 20px);
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -89,6 +97,16 @@
       }
       20%, 24%, 55% {
         opacity: 0;
+      }
+    }
+    /* Adjustments for small screens (like iPhones) */
+    @media screen and (max-width: 480px) {
+      body {
+        padding: env(safe-area-inset-top, 10px) env(safe-area-inset-right, 10px) env(safe-area-inset-bottom, 10px) env(safe-area-inset-left, 10px);
+        font-size: 0.9em;
+      }
+      .input-line {
+        margin-top: 5px;
       }
     }
   </style>
