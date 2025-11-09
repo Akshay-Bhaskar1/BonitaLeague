@@ -10,41 +10,63 @@
       margin: 0;
       padding: 0;
       font-family: 'Poppins', sans-serif;
-      background-color: black;
-      color: white;
+      background: #000000;
+      color: rgba(255,255,255,0.9);
       overflow-x: hidden;
+      letter-spacing: 0.01em;
+      font-weight: 300;
+    }
+    /* Enhanced text glow effects */
+    body {
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 0 20px rgba(255,255,255,0.15);
+    }
+    h1, h2, h3, h4 {
+      color: #ffffff;
+      text-shadow: 
+        0 0 20px rgba(255,255,255,0.2),
+        0 0 40px rgba(255,255,255,0.1);
+    }
+    /* Add subtle text glow to headings */
+    h1, h2, h3 {
+      text-shadow: 0 0 20px rgba(255,255,255,0.15),
+                   0 0 40px rgba(255,255,255,0.1);
     }
     /* Navigation Bar */
     nav {
       position: fixed;
-      top: 0;
+      top: 12px;
       left: 0;
       width: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 10;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      z-index: 50;
+      pointer-events: none; /* allow overlay to control clicks when visible */
     }
     nav ul {
       list-style: none;
       margin: 0;
-      padding: 10px 20px;
+      padding: 8px 24px;
       display: flex;
       align-items: center;
+      justify-content: flex-start;
+      gap: 18px;
+      pointer-events: auto;
     }
     nav ul li {
-      margin: 0 15px;
+      margin: 0;
       position: relative;
     }
     nav ul li a {
       text-decoration: none;
-      color: white;
+      color: rgba(255,255,255,0.9);
       font-size: 1em;
       padding: 8px 12px;
-      transition: background 0.3s;
+      transition: all 0.25s ease;
+      border-radius: 6px;
+      text-shadow: 0 0 20px rgba(255,255,255,0.15);
     }
     nav ul li a:hover {
-      background: #FF6600;
-      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+      text-shadow: 0 0 20px rgba(255,255,255,0.3);
     }
     /* Dropdown Menu Style */
     .dropdown > a:after {
@@ -55,87 +77,121 @@
       /* Always use flex row for the inner dropdown menu */
       display: none;
       position: absolute;
-      top: 100%;
+      top: 110%;
       left: 0;
-      background: rgba(0, 0, 0, 0.9);
-      padding: 10px;
+      background: #ffffff;
+      padding: 8px;
       list-style: none;
       min-width: 150px;
-      border-radius: 4px;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      gap: 10px;
+      border-radius: 6px;
+      box-shadow: 0 6px 18px rgba(7,41,77,0.08);
+      flex-direction: column;
+      gap: 6px;
     }
     .dropdown ul li {
       margin: 0;
     }
     .dropdown ul li a {
       display: inline-block;
-      padding: 8px 15px;
+      padding: 8px 12px;
       white-space: nowrap;
+      color: #07294d;
     }
     .dropdown:hover ul {
-      display: flex;
+      display: block;
     }
-    /* Canvas covers entire viewport and is behind everything */
-    canvas {
+    /* Dynamic background with interactive dots */
+    .dynamic-bg {
       position: fixed;
-      top: 0;
-      left: 0;
+      inset: 0;
+      z-index: 0;
+      background: #000;
+      pointer-events: none;
+    }
+    /* Canvas for interactive dot grid */
+    #dotCanvas {
+      position: fixed;
+      inset: 0;
       width: 100vw;
       height: 100vh;
-      z-index: 0;
+      opacity: 0.8;
+    }
+    /* Subtle overall glow */
+    .dynamic-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at 50% 30%,
+        rgba(255,255,255,0.03) 0%,
+        transparent 70%
+      );
+      filter: blur(30px);
       pointer-events: none;
     }
     /* Content Wrapper */
     .wrapper {
       position: relative;
-      z-index: 2;
+      z-index: 20;
       text-align: center;
       padding: 120px 20px 150px; /* extra top padding to clear nav, bottom for button space */
-      max-width: 90%;
-      margin: auto;
+      max-width: 980px;
+      margin: 0 auto;
       background: transparent;
     }
     h1 {
       font-size: 4.5em;
-      letter-spacing: 3px;
-      font-weight: 600;
-      margin-bottom: 20px;
+      letter-spacing: 2px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #ffffff;
+      text-shadow: 
+        0 0 25px rgba(255,255,255,0.3),
+        0 0 45px rgba(255,255,255,0.2);
     }
     .headline {
-      font-size: 2.2em;
-      line-height: 1.8;
+      font-size: 1.6em;
+      line-height: 1.6;
       font-weight: 300;
-      max-width: 80%;
-      margin: 20px auto;
+      max-width: 88%;
+      margin: 12px auto;
     }
     /* Modern styled Instagram button */
     .cta-button {
       display: inline-block;
-      background-color: #FF6600;
+      background-color: #0b68ff; /* fiery blue */
       color: white;
-      padding: 15px 30px;
-      font-size: 1.2em;
+      padding: 12px 26px;
+      font-size: 1.05em;
       text-decoration: none;
       border: none;
-      border-radius: 50px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-      transition: background-color 0.3s ease, transform 0.3s ease;
-      margin-top: 40px;
+      border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(11,104,255,0.16);
+      transition: transform 0.24s ease, box-shadow 0.24s ease;
+      margin-top: 28px;
     }
     .cta-button:hover {
-      background-color: #e55b00;
-      transform: translateY(-3px);
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 14px 34px rgba(11,104,255,0.18);
     }
     /* NEW: JOIN THE MADNESS! Button Styles */
     .join-button {
-      background-color: rgba(255,255,255,0.9) !important;
-      color: black !important;
-      box-shadow: 0 0 25px rgba(255,255,255,0.8) !important;
+      background-color: #ffffff !important;
+      color: #07294d !important;
+      box-shadow: 0 6px 20px rgba(7,41,77,0.06) !important;
     }
     .join-button:hover {
-      background-color: rgba(255,255,255,1) !important;
+      background-color: #fff !important;
+    }
+    /* small orange accent button */
+    .accent {
+      background: linear-gradient(90deg,#ff6a00,#ff8a2b);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(255,106,0,0.18);
+      display: inline-block;
+      text-decoration: none;
     }
     /* Media Queries for Responsiveness */
     @media (max-width: 768px) {
@@ -143,7 +199,7 @@
         font-size: 3em;
       }
       .headline {
-        font-size: 1.5em;
+        font-size: 1.15em;
       }
       .wrapper {
         padding: 100px 10px; /* Reduce padding for small screens */
@@ -165,9 +221,112 @@
         flex-wrap: nowrap;
       }
     }
+    /* Intro overlay styles */
+    /* Intro overlay must be absolutely top-most and block everything */
+    .intro-overlay {
+      position: fixed;
+      inset: 0;
+      background: #000000;
+      z-index: 2147483647; /* very large to stay on top */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      opacity: 0;
+      transition: opacity 420ms ease-in-out;
+    }
+    .intro-overlay.intro-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .intro-overlay video {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 2147483648;
+      background: black;
+    }
+    /* Replay FAB (fixed bottom-right with swirly animated gradient) */
+    .replay-fab {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      z-index: 1100; /* under the overlay but above page content */
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(11,104,255,0.18), 0 4px 14px rgba(255,106,0,0.12);
+      background: conic-gradient(from 0deg, #ff6a00, #ff8a2b, #0b68ff, #0071d9, #ff6a00);
+      color: white;
+      font-weight: 700;
+      transition: transform 220ms ease, box-shadow 220ms ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .replay-fab:active { transform: scale(0.96); }
+    .replay-fab .inner {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.18);
+      display:flex;align-items:center;justify-content:center;
+      backdrop-filter: blur(4px);
+    }
+    /* animated rotation of the gradient ring */
+    @keyframes swirl {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .replay-fab { animation: swirl 8s linear infinite; }
+    /* When overlay is active, disable interactions with everything else */
+    body.overlay-active > *:not(#introOverlay) {
+      pointer-events: none !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+      touch-action: none !important;
+      opacity: 0.999; /* keep visual but ensure no interaction */
+    }
+    .intro-controls {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 10000;
+    }
+    .intro-skip {
+      background: rgba(255,255,255,0.9);
+      color: #07294d;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
   </style>
 </head>
 <body>
+  <!-- Intro overlay (plays IntroVideo.mp4 when appropriate) -->
+  <div id="introOverlay" class="intro-overlay" aria-hidden="true" style="display:none">
+    <div class="intro-controls">
+      <button id="skipIntro" class="intro-skip">Skip</button>
+    </div>
+    <video id="introVideo" muted playsinline preload="auto" webkit-playsinline>
+      <source src="IntroVideo.mp4" type="video/mp4">
+      Your browser does not support the intro video.
+    </video>
+  </div>
+
+  <!-- Dynamic background -->
+  <div class="dynamic-bg" aria-hidden="true">
+    <canvas id="dotCanvas"></canvas>
+  </div>
+
   <!-- Navigation Bar -->
   <nav>
     <ul>
@@ -185,109 +344,328 @@
     </ul>
   </nav>
   
-  <!-- Canvas Background with Animated Particles and Connections -->
-  <canvas id="backgroundCanvas"></canvas>
-  
   <!-- Content Wrapper -->
   <div class="wrapper">
     <h1>The Bonita Basketball League</h1>
     <p class="headline">
       6 TEAMS, 24 PLAYERS, ONLY ONE  
-      <a href="password.html" style="color: #ffffff; text-decoration: none;">WINNER</a>, AND ONE VERY VERY UNLUCKY LOSER.
+      <a href="password.html" style="color: #0b68ff; text-decoration: none; font-weight:700;">WINNER</a>, AND ONE VERY VERY UNLUCKY LOSER.
     </p>
     <p class="headline">
       Bonita Park's greatest stars compete to see just who is the best of them all.
     </p>
     <p class="headline">
-      The top gets fame, glory, and free El Queso.
+      Back for Season 2, and teams are hungrier than ever.
     </p>
     <p class="headline">
-      The bottom must go to Macy's and buy the biggest bra they can find. Straight faced. No shame. On video. For 
-      <a href="hall_of_fame.html" style="color: #ffffff; text-decoration: none;">all to see.</a>
+      They don't do it like  
+      <a href="hall_of_fame.html" style="color: #0b68ff; text-decoration: none; font-weight:700;">we do it.</a>
     </p>
-    <a class="cta-button" href="https://www.instagram.com/bonitabasketballleague/" target="_blank">Follow our Instagram!</a>
+    <a class="cta-button" href="https://www.instagram.com/bonitabasketballleague/" target="_blank" rel="noopener">Follow our Instagram!</a>
     
     <!-- NEW BUTTON: JOIN THE MADNESS! -->
-    <a class="cta-button join-button" href="https://forms.gle/EGnXAEQzWhseop1H7" style="margin-top: 20px;">JOIN THE MADNESS!</a>
+    <a class="cta-button join-button" href="https://forms.gle/EGnXAEQzWhseop1H7" style="margin-top: 20px; margin-left:12px;">JOIN THE MADNESS!</a>
+    <div style="margin-top:18px">
+      <a class="accent" href="teams.html">See Teams</a>
+    </div>
+    <!-- Replay control -->
+    <!-- the visible inline replay button has been replaced by a fixed FAB (defined later) -->
   </div>
   
   <script>
-    const canvas = document.getElementById('backgroundCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    
-    let particles = [];
-    const numParticles = 200;
-    
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.radius = Math.random() * 5 + 1;
-        this.speedX = (Math.random() - 0.5) * 1.5;
-        this.speedY = (Math.random() - 0.5) * 1.5;
-        this.opacity = Math.random() * 0.5 + 0.3;
+    (function(){
+      const overlay = document.getElementById('introOverlay');
+      const video = document.getElementById('introVideo');
+      const skipBtn = document.getElementById('skipIntro');
+
+      // Determine whether to play the intro:
+      // Play only if the user hasn't seen it (localStorage) AND
+      // the referrer is either empty or from a different origin (i.e., not coming from another page on this site).
+      function shouldPlayIntro(){
+        try{
+          const played = localStorage.getItem('introPlayed');
+          if (played) return false;
+          const ref = document.referrer;
+          if (!ref) return true; // direct visit or external
+          try{
+            const refUrl = new URL(ref);
+            if (refUrl.origin === location.origin) return false; // navigated from within site
+            return true; // came from external site
+          }catch(e){
+            // if ref couldn't be parsed, err on the side of not playing
+            return false;
+          }
+        }catch(e){
+          return false;
+        }
       }
-      move() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+
+      function hideOverlay(){
+        // start fade-out by removing visible class; transitionend will set display:none
+        overlay.classList.remove('intro-visible');
+        overlay.setAttribute('aria-hidden','true');
+        try{ localStorage.setItem('introPlayed','1'); }catch(e){}
+        // restore scrolling and interactions
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        document.documentElement.classList.remove('overlay-active');
+        try{ restoreFocus(); }catch(e){}
+        try{ window.removeEventListener('keydown', blockKeys, true); }catch(e){}
       }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,102,0, ${this.opacity})`;
-        ctx.fill();
+
+      // helper: disable/restore keyboard scrolling while overlay is active
+      function blockKeys(e){
+        const keys = [32,33,34,35,36,37,38,39,40]; // space, page up/down, home/end, arrows
+        if (keys.indexOf(e.keyCode) !== -1) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
       }
-    }
-    
-    function initParticles() {
-      particles = [];
-      for (let i = 0; i < numParticles; i++) {
-        particles.push(new Particle());
+
+      // helper: disable focus on other elements while overlay active
+      let _savedFocusables = [];
+      function disableFocus(){
+        try{
+          const selector = 'a,button,input,textarea,select,details,[tabindex]';
+          const nodes = Array.from(document.querySelectorAll(selector)).filter(n => !overlay.contains(n));
+          _savedFocusables = nodes.map(n => ({el: n, prev: n.getAttribute('tabindex')}));
+          nodes.forEach(n => n.setAttribute('tabindex','-1'));
+        }catch(e){}
       }
-    }
-    
-    function drawConnections() {
-      const connectionThreshold = 120;
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance < connectionThreshold) {
-            const lineOpacity = 1 - distance / connectionThreshold;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(200,200,200, ${lineOpacity.toFixed(2)})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
+      function restoreFocus(){
+        try{
+          _savedFocusables.forEach(item => {
+            if (item.prev !== null) item.el.setAttribute('tabindex', item.prev);
+            else item.el.removeAttribute('tabindex');
+          });
+          _savedFocusables = [];
+        }catch(e){}
+      }
+
+      function showOverlayAndPlay(){
+        overlay.style.display = 'flex';
+        // small next-tick so CSS transition can animate
+        requestAnimationFrame(() => overlay.classList.add('intro-visible'));
+        overlay.setAttribute('aria-hidden','false');
+        // prevent scrolling while video plays
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+        document.documentElement.classList.add('overlay-active');
+        try{ disableFocus(); }catch(e){}
+        try{ window.addEventListener('keydown', blockKeys, true); }catch(e){}
+        // attempt to play muted (most browsers allow autoplay when muted)
+        // ensure the video has autoplay/muted attributes, then try programmatic play
+        video.muted = true;
+        video.playsInline = true;
+        video.setAttribute('autoplay','');
+        const playPromise = video.play();
+        // focus video to catch keyboard events
+        try{ video.focus(); }catch(e){}
+        if (playPromise !== undefined) {
+          playPromise.then(()=>{
+            // playing
+          }).catch(()=>{
+            // if autoplay blocked, show controls so user can start it
+            video.setAttribute('controls','');
+          });
+        }
+      }
+
+      // Hook up events
+      skipBtn.addEventListener('click', function(){
+        try{ video.pause(); }catch(e){}
+        hideOverlay();
+      });
+
+        // Replay control (floating FAB)
+        function wireReplayButton(){
+          const replayBtn = document.getElementById('replayIntroBtn');
+          if (replayBtn){
+            replayBtn.addEventListener('click', function(e){
+              e.preventDefault();
+              try{ localStorage.removeItem('introPlayed'); }catch(err){}
+              // ensure video rewinds and plays from start
+              try{ video.currentTime = 0; }catch(e){}
+              showOverlayAndPlay();
+            });
+          }
+        }
+        // wire later once DOM finishes
+        wireReplayButton();
+
+      video.addEventListener('ended', function(){
+        hideOverlay();
+      });
+
+      // If user interacts (tap/click) on overlay, allow to unmute and continue
+      overlay.addEventListener('click', function(e){
+        // if clicked outside controls, try to toggle playback if it's paused
+        if (e.target === overlay){
+          if (video.paused) video.play().catch(()=>{});
+        }
+      });
+
+      // Ensure fade-out hides display after transition completes
+      overlay.addEventListener('transitionend', function(e){
+        if (e.propertyName === 'opacity' && !overlay.classList.contains('intro-visible')){
+          overlay.style.display = 'none';
+        }
+      });
+
+      // Kick off
+      if (shouldPlayIntro()){
+        showOverlayAndPlay();
+      } else {
+        // ensure overlay hidden
+        overlay.style.display = 'none';
+      }
+      // create the fixed replay button and insert into body
+      (function createReplayFAB(){
+        if (document.getElementById('replayIntroBtn')) return;
+        const btn = document.createElement('button');
+        btn.id = 'replayIntroBtn';
+        btn.className = 'replay-fab';
+        btn.setAttribute('aria-label','Replay Intro');
+        btn.innerHTML = '<span class="inner">⟳</span>';
+        document.body.appendChild(btn);
+        // wire the button
+        wireReplayButton();
+      })();
+    })();
+
+    // Interactive dot grid background
+    (function setupDotGrid() {
+      const canvas = document.getElementById('dotCanvas');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+      
+      // Dot grid configuration
+      const spacing = 32; // Space between dots
+      const dotSize = 1.5;
+      const mouseRadius = 150; // How far mouse influence reaches
+      let mouseX = 0;
+      let mouseY = 0;
+
+      // Calculate grid dimensions
+      const cols = Math.floor(width / spacing) + 1;
+      const rows = Math.floor(height / spacing) + 1;
+      
+      // Create dot grid
+      const dots = [];
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          dots.push({
+            x: i * spacing,
+            y: j * spacing,
+            baseColor: 'rgba(255,255,255,0.15)',
+            currentColor: 'rgba(255,255,255,0.15)',
+            glowColor: Math.random() < 0.5 ? 
+              'rgba(11,104,255,0.8)' : // blue
+              'rgba(255,106,0,0.8)',   // orange
+            pulsePhase: Math.random() * Math.PI * 2, // Random starting phase
+            pulseSpeed: 0.5 + Math.random() * 0.5,   // Random speed
+            isPulsing: false,  // Whether this dot is currently in pulse mode
+            pulseIntensity: 0  // Current pulse intensity
+          });
+        }
+      }
+
+      // Track mouse position
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      // Manage pulsing dots
+      function updatePulsingDots() {
+        const maxPulsing = Math.floor(dots.length * 0.05); // Max 5% of dots pulsing at once
+        const currentPulsing = dots.filter(d => d.isPulsing).length;
+        
+        if (currentPulsing < maxPulsing && Math.random() < 0.02) { // 2% chance each frame
+          // Find a dot that's far from the mouse
+          const farDots = dots.filter(dot => {
+            const dx = mouseX - dot.x;
+            const dy = mouseY - dot.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            return distance > mouseRadius * 1.5 && !dot.isPulsing;
+          });
+          
+          if (farDots.length > 0) {
+            const dot = farDots[Math.floor(Math.random() * farDots.length)];
+            dot.isPulsing = true;
+            dot.pulsePhase = 0;
           }
         }
       }
-    }
-    
-    function animateParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(particle => {
-        particle.move();
-        particle.draw();
-      });
-      drawConnections();
-      requestAnimationFrame(animateParticles);
-    }
-    
-    initParticles();
-    animateParticles();
+
+      // Animation loop
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+        updatePulsingDots();
+        
+        // Update and draw each dot
+        dots.forEach(dot => {
+          // Calculate distance from mouse
+          const dx = mouseX - dot.x;
+          const dy = mouseY - dot.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          let finalColor = dot.baseColor;
+          let glowSize = dotSize;
+          
+          // Handle mouse proximity
+          if (distance < mouseRadius) {
+            const intensity = 1 - (distance / mouseRadius);
+            const glowBase = dot.glowColor.slice(0, -4);
+            finalColor = `${glowBase}${intensity})`;
+            glowSize = dotSize * 2;
+          }
+          
+          // Handle pulsing animation
+          if (dot.isPulsing) {
+            dot.pulsePhase += dot.pulseSpeed * 0.03;
+            dot.pulseIntensity = Math.sin(dot.pulsePhase) * 0.5 + 0.5;
+            
+            if (dot.pulsePhase >= Math.PI * 2) {
+              dot.isPulsing = false;
+              dot.pulseIntensity = 0;
+            } else {
+              const glowBase = dot.glowColor.slice(0, -4);
+              finalColor = `${glowBase}${dot.pulseIntensity * 0.4})`; // Softer pulse
+              glowSize = dotSize * (1 + dot.pulseIntensity);
+            }
+          }
+          
+          // Draw dot
+          ctx.beginPath();
+          ctx.fillStyle = finalColor;
+          ctx.arc(dot.x, dot.y, dotSize, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Add glow effect
+          if (finalColor !== dot.baseColor) {
+            ctx.beginPath();
+            ctx.arc(dot.x, dot.y, glowSize * 2, 0, Math.PI * 2);
+            ctx.fillStyle = finalColor.replace(/[0-9.]+\)$/, '0.1)');
+            ctx.fill();
+          }
+        });
+        
+        requestAnimationFrame(animate);
+      }
+      
+      // Start animation
+      animate();
+    })();
   </script>
 </body>
 </html>
