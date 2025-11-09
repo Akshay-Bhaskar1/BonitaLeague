@@ -1,274 +1,414 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Teams | Bonita Basketball League</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: black;
-      color: white;
-      overflow-x: hidden;
-    }
-   
-    /* Navigation Bar (similar to previous pages) */
-    .nav-bar {
-      display: flex;
-      justify-content: space-around;
-      padding: 20px;
-      background-color: rgba(0, 0, 0, 0.8);
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-    }
-    .nav-bar a {
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 10px 20px;
-      transition: 0.3s;
-      border-radius: 10px;
-    }
-    .nav-bar a:hover {
-      background-color: #FF6600;
-    }
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: rgba(0, 0, 0, 0.8);
-      min-width: 160px;
-      z-index: 101;
-      border-radius: 10px;
-    }
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-    .dropdown-content a {
-      color: white;
-      padding: 10px 20px;
-      text-decoration: none;
-      display: block;
-      font-weight: 600;
-      transition: 0.3s;
-      border-radius: 10px;
-    }
-    .dropdown-content a:hover {
-      background-color: #FF6600;
-    }
-   
-    /* Main Content */
-    .container {
-      padding: 100px 20px 40px;
-      margin-top: 80px;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .container h1 {
-      text-align: center;
-      color: #FF0000;
-      font-size: 3.5em; /* Larger headline */
-      margin-bottom: 20px;
-    }
-   
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, auto);
-      gap: 30px;
-      padding: 20px;
-    }
-   
-    .team-card {
-      background-color: #000;
-      border: 2px solid #FF0000;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
-      transition: transform 0.3s;
-    }
-    .team-card:hover {
-      transform: scale(1.02);
-    }
-    .team-card h2 {
-      font-size: 1.8em;
-      margin-top: 0;
-      margin-bottom: 10px;
-      color: #FF0000;
-    }
-    .team-card ul {
-      list-style: none;
-      padding-left: 0;
-      margin: 0;
-      font-size: 1.1em;
-    }
-    .team-card ul li {
-      margin-bottom: 5px;
-      cursor: pointer;
-    }
-   
-    /* Responsive adjustments for text inside cards */
-    @media (max-width: 600px) {
-      .team-card h2 {
-        font-size: 1.5em;
-      }
-      .team-card ul {
-        font-size: 1em;
-      }
-    }
-    
-    /* Responsive grid adjustments: medium screens */
-    @media (max-width: 768px) {
-      .team-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-        padding: 10px;
-      }
-      .container {
-        padding: 80px 20px 40px;
-      }
-      .container h1 {
-        font-size: 2.8em;
-      }
-    }
-    
-    /* Responsive grid adjustments: very small screens */
-    @media (max-width: 480px) {
-      .team-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-      .container h1 {
-        font-size: 2.2em;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teams | Bonita Basketball League</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #000000;
+  color: rgba(255,255,255,0.9);
+  overflow-x: hidden;
+  letter-spacing: 0.01em;
+  font-weight: 300;
+  text-shadow: 0 0 20px rgba(255,255,255,0.10);
+}
+
+h1, h2, h3, h4 {
+  color: #ffffff;
+  text-shadow: 0 0 20px rgba(255,255,255,0.2), 0 0 40px rgba(255,255,255,0.1);
+}
+
+/* Background grid layer */
+.dot-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#dotCanvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.nav-bar {
+  display: flex;
+  justify-content: flex-start;
+  gap: 18px;
+  padding: 18px 32px;
+  background: rgba(11,104,255,0.12);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  box-shadow: 0 2px 24px rgba(11,104,255,0.08);
+  border-bottom: 1px solid rgba(11,104,255,0.18);
+}
+
+.nav-bar a {
+  color: rgba(255,255,255,0.92);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 10px 20px;
+  transition: 0.3s;
+  border-radius: 10px;
+  text-shadow: 0 0 20px rgba(255,255,255,0.15);
+}
+
+.nav-bar a:hover {
+  background: linear-gradient(90deg,#0b68ff,#0071d9);
+  color: #fff;
+  box-shadow: 0 0 12px #0b68ff44;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: #0b68ff;
+  min-width: 160px;
+  z-index: 11;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(11,104,255,0.12);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a {
+  color: #fff;
+  padding: 10px 20px;
+  text-decoration: none;
+  display: block;
+  font-weight: 600;
+  transition: 0.3s;
+  border-radius: 10px;
+}
+
+.dropdown-content a:hover {
+  background: linear-gradient(90deg,#ff6a00,#ff8a2b);
+  color: #fff;
+}
+
+.container {
+  padding: 100px 20px 40px;
+  margin-top: 80px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  z-index: 5;
+}
+
+.container h1 {
+  text-align: center;
+  color: #0b68ff;
+  font-size: 3.5em;
+  margin-bottom: 20px;
+  text-shadow: 0 0 25px #0b68ff88, 0 0 45px #fff2;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 30px;
+  padding: 20px;
+}
+
+.team-card {
+  background: linear-gradient(120deg,#0b68ff22 0%,#000 100%);
+  border: 2px solid #0b68ff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 0 24px #0b68ff33, 0 0 12px #ff6a0033 inset;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+
+/* Existing hover border change */
+.team-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 32px #0b68ff77, 0 0 24px #ff6a0055 inset;
+  border-color: #ff6a00;
+}
+
+/* New: change only the hovered card's title to orange with matching glow */
+.team-card:hover h2 {
+  color: #ff6a00;
+  text-shadow: 0 0 18px #ff6a00cc, 0 0 30px #fff2;
+  transition: color 0.25s, text-shadow 0.25s;
+}
+
+.team-card h2 {
+  font-size: 1.8em;
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #0b68ff;
+  text-shadow: 0 0 18px #0b68ff99, 0 0 30px #fff2;
+  transition: color 0.25s, text-shadow 0.25s;
+}
+
+.team-card ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  font-size: 1.1em;
+}
+
+.team-card ul li {
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.team-card ul li:hover {
+  color: #ff6a00;
+  text-shadow: 0 0 10px #ff6a00aa;
+}
+
+@media (max-width: 768px) {
+  .team-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .container h1 {
+    font-size: 2.8em;
+  }
+}
+
+@media (max-width: 480px) {
+  .team-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .container h1 {
+    font-size: 2.2em;
+  }
+}
+</style>
 </head>
+
 <body>
-  <!-- Navigation Bar -->
-  <div class="nav-bar">
-    <a href="index.html">Home</a>
-    <a href="provosts.html">Provosts</a>
-    <a href="league_news.html">League News</a>
-    <div class="dropdown">
-      <a href="#">League Info</a>
-      <div class="dropdown-content">
-        <a href="player_info.html">Player Info</a>
-        <a href="teams.html">Teams</a>
-        <a href="standings.html">Standings</a>
-        <a href="rules.html">Rules</a>
-      </div>
+<div class="dot-bg" aria-hidden="true">
+  <canvas id="dotCanvas"></canvas>
+</div>
+
+<div class="nav-bar">
+  <a href="index.html">Home</a>
+  <a href="provosts.html">Provosts</a>
+  <a href="league_news.html">League News</a>
+  <div class="dropdown">
+    <a href="#">League Info</a>
+    <div class="dropdown-content">
+      <a href="player_info.html">Player Info</a>
+      <a href="teams.html">Teams</a>
+      <a href="standings.html">Standings</a>
+      <a href="rules.html">Rules</a>
     </div>
   </div>
- 
-  <!-- Main Content -->
-  <div class="container">
-    <h1 style="text-align:center; color:#FF0000;">Teams</h1>
-    <div class="team-grid">
-      <!-- Golden State Gooners -->
-      <div class="team-card">
-        <h2>Golden State Gooners</h2>
-        <ul>
-          <li>Ashwin Thomas</li>
-          <li>Omar Ismaiel</li>
-          <li>Abir Bakshi</li>
-          <li id="harris" onclick="window.location.href='secret_game.html'">Harris Choudry</li>
-        </ul>
-      </div>
-      <!-- Soham's Skibs -->
-      <div class="team-card">
-        <h2>Soham's Skibs</h2>
-        <ul>
-          <li id="jay">Jay Goyal</li>
-          <li>Ameya Chaturvedi</li>
-          <li>Khaja Ayaan</li>
-          <li>Soham Mule</li>
-        </ul>
-      </div>
-      <!-- Swiss Cheesers -->
-      <div class="team-card">
-        <h2>Swiss Cheesers</h2>
-        <ul>
-          <li>Mithran Regupathy</li>
-          <li>Shourya Sharma</li>
-          <li>Eshan Mahuli</li>
-          <li>Raghav Gupta</li>
-        </ul>
-      </div>
-      <!-- The Jackson 5 -->
-      <div class="team-card">
-        <h2>The Jackson 5</h2>
-        <ul>
-          <li id="shayan">Shayan Parikh</li>
-          <li>Shuopu Wang</li>
-          <li>Dev Arora</li>
-          <li>Shravan Narayanan</li>
-        </ul>
-      </div>
-      <!-- Green Gooner Goblins -->
-      <div class="team-card">
-        <h2>Green Gooner Goblins</h2>
-        <ul>
-          <li>Omkar Vasa</li>
-          <li>Yash Dharankar</li>
-          <li>Pratt Penumarthy</li>
-          <li>Ebad Quraishi</li>
-        </ul>
-      </div>
-      <!-- Ashwinners -->
-      <div class="team-card">
-        <h2>Ashwinners</h2>
-        <ul>
-          <li>Wentao Xie</li>
-          <li>Abdirahman Omar</li>
-          <li>Parasuram Muralikumar</li>
-          <li id="akshay">Akshay Bhaskar</li>
-        </ul>
-      </div>
+</div>
+
+<div class="container">
+  <h1>Teams</h1>
+  <div class="team-grid">
+    <div class="team-card">
+      <h2>Golden State Gooners</h2>
+      <ul>
+        <li>Ashwin Thomas</li>
+        <li>Omar Ismaiel</li>
+        <li>Abir Bakshi</li>
+        <li id="harris" onclick="window.location.href='secret_game.html'">Harris Choudry</li>
+      </ul>
+    </div>
+
+    <div class="team-card">
+      <h2>Soham's Skibs</h2>
+      <ul>
+        <li id="jay">Jay Goyal</li>
+        <li>Ameya Chaturvedi</li>
+        <li>Khaja Ayaan</li>
+        <li>Soham Mule</li>
+      </ul>
+    </div>
+
+    <div class="team-card">
+      <h2>Swiss Cheesers</h2>
+      <ul>
+        <li>Mithran Regupathy</li>
+        <li>Shourya Sharma</li>
+        <li>Eshan Mahuli</li>
+        <li>Raghav Gupta</li>
+      </ul>
+    </div>
+
+    <div class="team-card">
+      <h2>The Jackson 5</h2>
+      <ul>
+        <li id="shayan">Shayan Parikh</li>
+        <li>Shuopu Wang</li>
+        <li>Dev Arora</li>
+        <li>Shravan Narayanan</li>
+      </ul>
+    </div>
+
+    <div class="team-card">
+      <h2>Green Gooner Goblins</h2>
+      <ul>
+        <li>Omkar Vasa</li>
+        <li>Yash Dharankar</li>
+        <li>Pratt Penumarthy</li>
+        <li>Ebad Quraishi</li>
+      </ul>
+    </div>
+
+    <div class="team-card">
+      <h2>Ashwinners</h2>
+      <ul>
+        <li>Wentao Xie</li>
+        <li>Abdirahman Omar</li>
+        <li>Parasuram Muralikumar</li>
+        <li id="akshay">Akshay Bhaskar</li>
+      </ul>
     </div>
   </div>
+</div>
 
-  <script>
-    // Track the state for glitch effect on specific names
-    let clickedNames = {
-      akshay: false,
-      jay: false,
-      shayan: false
-    };
+<script>
+let clickedNames = { akshay: false, jay: false, shayan: false };
+function checkGlitch() {
+  if (clickedNames.akshay && clickedNames.jay && clickedNames.shayan) {
+    window.location.href = "provost_info.html";
+  }
+}
+document.getElementById('akshay').onclick = () => { document.getElementById('akshay').style.color = "red"; clickedNames.akshay = true; checkGlitch(); };
+document.getElementById('jay').onclick = () => { document.getElementById('jay').style.color = "red"; clickedNames.jay = true; checkGlitch(); };
+document.getElementById('shayan').onclick = () => { document.getElementById('shayan').style.color = "red"; clickedNames.shayan = true; checkGlitch(); };
 
-    function checkGlitch() {
-      if (clickedNames.akshay && clickedNames.jay && clickedNames.shayan) {
-        window.location.href = "provost_info.html";
+(function setupDotGridRipple() {
+  const canvas = document.getElementById('dotCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.round(window.innerWidth * dpr);
+    canvas.height = Math.round(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resizeCanvas();
+  window.addEventListener('resize', () => {
+    resizeCanvas();
+    createGrid();
+  });
+
+  const spacing = 32;
+  const dotSize = 1.5;
+  const baseColor = 'rgba(255,255,255,0.15)';
+  let dots = [];
+  function createGrid() {
+    dots = [];
+    for (let x = 0; x < window.innerWidth; x += spacing)
+      for (let y = 0; y < window.innerHeight; y += spacing)
+        dots.push({ x, y, base: baseColor });
+  }
+  createGrid();
+
+  let ripples = [];
+  const colors = ['rgba(11,104,255,1)', 'rgba(255,106,0,1)'];
+
+  // Listen for clicks on the document and map them to canvas coordinates.
+  document.addEventListener('click', e => {
+    // Ignore clicks on nav links and interactive elements so navigation remains smooth
+    if (e.target.closest('.nav-bar, a, button')) {
+      return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const now = performance.now();
+
+    // Two waves per click: primary and secondary (secondary slightly delayed / faster)
+    const color = colors[Math.random() < 0.5 ? 0 : 1];
+
+    // Primary ripple: broader, slightly slower
+    const dur1 = 1000;
+    const maxR1 = Math.max(window.innerWidth, window.innerHeight) * 1.15;
+    ripples.push({ x, y, color, start: now, dur: dur1, maxR: maxR1 });
+
+    // Secondary ripple: starts shortly after, slightly tighter/faster to create double-ring effect
+    const delay = 120; // ms
+    const dur2 = 700;
+    const maxR2 = Math.max(window.innerWidth, window.innerHeight) * 0.9;
+    ripples.push({ x, y, color, start: now + delay, dur: dur2, maxR: maxR2 });
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const now = performance.now();
+    ripples = ripples.filter(r => now - r.start < r.dur + 400);
+
+    for (let d of dots) {
+      let fill = d.base;
+
+      for (let r of ripples) {
+        const t = Math.min(1, Math.max(0, (now - r.start) / r.dur));
+        const radius = r.maxR * t;
+        const dist = Math.hypot(d.x - r.x, d.y - r.y);
+        const waveWidth = 22; // slightly wider for stronger visible ring
+        const phase = Math.abs(dist - radius);
+
+        if (phase <= waveWidth) {
+          const spatialFactor = 1 - (phase / waveWidth);
+          const timeFactor = 1 - t;
+          const intensity = spatialFactor * timeFactor;
+
+          // Brighter peaks: increase peakAlpha (clamped to 1.0)
+          const peakAlpha = 1.0;
+          const alpha = Math.max(0.04, Math.min(peakAlpha * intensity + 0.08, 1.0));
+
+          let colorStr = r.color;
+          if (colorStr.endsWith(',1)')) {
+            colorStr = colorStr.replace(/,1\)$/, `,${alpha})`);
+          } else {
+            colorStr = colorStr.replace(/\)$/, `,${alpha})`);
+          }
+          fill = colorStr;
+          break;
+        }
       }
+
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, dotSize, 0, Math.PI * 2);
+      ctx.fillStyle = fill;
+      ctx.fill();
     }
 
-    document.getElementById('akshay').addEventListener('click', function() {
-      this.style.color = "red"; // Glitch effect: change text to red
-      clickedNames.akshay = true;
-      checkGlitch();
-    });
-
-    document.getElementById('jay').addEventListener('click', function() {
-      this.style.color = "red";
-      clickedNames.jay = true;
-      checkGlitch();
-    });
-
-    document.getElementById('shayan').addEventListener('click', function() {
-      this.style.color = "red";
-      clickedNames.shayan = true;
-      checkGlitch();
-    });
-  </script>
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
 </body>
 </html>
